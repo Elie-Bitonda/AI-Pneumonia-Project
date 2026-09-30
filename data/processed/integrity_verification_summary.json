@@ -1,0 +1,27 @@
+{
+  "raw_image_extension_files": 17568,
+  "readable_file_count": 11712,
+  "verified_filesystem_sidecars": 5856,
+  "total_duplicate_groups_all_files": 5825,
+  "excess_duplicate_files_all_files": 10223,
+  "readable_duplicate_groups": 5824,
+  "excess_readable_duplicate_files": 5888,
+  "across_split_duplicate_groups_all_files": 1,
+  "conflicting_label_duplicate_groups_all_files": 1,
+  "readable_conflicting_label_groups": 0,
+  "readable_across_split_groups": 0,
+  "directory_copy_groups": 5824,
+  "directory_comparison_rows": 5856,
+  "directory_comparison_hash_matches": 5856,
+  "unique_image_content_count": 5824,
+  "provisional_modeling_n": 5824,
+  "final_modeling_n": null,
+  "canonical_class_counts": {
+    "BACTERIAL_PNEUMONIA": 2760,
+    "NORMAL": 1579,
+    "VIRAL_PNEUMONIA": 1485
+  },
+  "unique_quality_flagged_images": 1091,
+  "patient_grouping_defensible": false,
+  "plan": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)"
+}

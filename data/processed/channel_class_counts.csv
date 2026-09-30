@@ -1,0 +1,6 @@
+target_label,image_mode,actual_channel_differences,count
+BACTERIAL_PNEUMONIA,L,False,2617
+BACTERIAL_PNEUMONIA,RGB,False,143
+NORMAL,L,False,1579
+VIRAL_PNEUMONIA,L,False,1345
+VIRAL_PNEUMONIA,RGB,False,140

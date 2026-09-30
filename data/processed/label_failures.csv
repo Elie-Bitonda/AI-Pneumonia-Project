@@ -1,0 +1,1 @@
+filepath,filename,original_split,original_folder,target_label,patient_id_if_parseable,patient_id_status,label_parse_status,label_parse_reason,width,height,aspect_ratio,image_mode,channel_count,file_size_bytes,mean_intensity,std_intensity,min_intensity,max_intensity,readable,sha256_hash,intensity_basis,read_error,hash_error,is_macos_sidecar

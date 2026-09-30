@@ -1,0 +1,4 @@
+class,example_filename,parsing_rule,number_of_images,count_scope
+NORMAL,IM-0001-0001.jpeg,NORMAL folder; no bacteria/virus token,1579,provisional unique readable hashes
+BACTERIAL_PNEUMONIA,person1000_bacteria_2931.jpeg,PNEUMONIA folder + whole bacteria token,2760,provisional unique readable hashes
+VIRAL_PNEUMONIA,person1000_virus_1681.jpeg,PNEUMONIA folder + whole virus token,1485,provisional unique readable hashes

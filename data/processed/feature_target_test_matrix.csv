@@ -1,0 +1,9 @@
+diagnostic_variable,data_type,target_type,association_method,effect_size_method,purpose,used_as_CNN_feature
+width,continuous,nominal three-class label,Kruskal-Wallis,eta_squared_H,acquisition/storage shortcut-risk diagnostic,NO
+height,continuous,nominal three-class label,Kruskal-Wallis,eta_squared_H,acquisition/storage shortcut-risk diagnostic,NO
+aspect_ratio,continuous,nominal three-class label,Kruskal-Wallis,eta_squared_H,acquisition/storage shortcut-risk diagnostic,NO
+file_size_bytes,continuous,nominal three-class label,Kruskal-Wallis,eta_squared_H,acquisition/storage shortcut-risk diagnostic,NO
+mean_intensity,continuous,nominal three-class label,Kruskal-Wallis,eta_squared_H,acquisition/storage shortcut-risk diagnostic,NO
+std_intensity,continuous,nominal three-class label,Kruskal-Wallis,eta_squared_H,acquisition/storage shortcut-risk diagnostic,NO
+image_mode,categorical,nominal three-class label,Pearson Chi-square,Cramers_V,acquisition/storage shortcut-risk diagnostic,NO
+channel_count,categorical,nominal three-class label,Pearson Chi-square,Cramers_V,acquisition/storage shortcut-risk diagnostic,NO

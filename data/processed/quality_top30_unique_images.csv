@@ -1,0 +1,31 @@
+sha256_hash,flag_count,reasons,filepath,target_label
+6e56e85605975d6264fb584ffc960b0b364fd2c6c7538242181562626087631c,4,"[""file_size_bytes"", ""height"", ""mean_intensity"", ""width""]",train/NORMAL/NORMAL2-IM-0899-0001.jpeg,NORMAL
+01762c0ff72af646d5f0bc4b48359e98121148830653da845ae6ee43bf666a67,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-1176-0001.jpeg,NORMAL
+045e6d19faee9f2bc12c72a567bd3b9983c06e57568943fcc57e03c36a702428,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0927-0001.jpeg,NORMAL
+07bcdc5f3a5a0bf1c08fb7ada779917eceb4c9600818c03e08dcca8bd6d7f51a,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0692-0001.jpeg,NORMAL
+0b6b4813c1003a68cb2feb7f8416ae546adf880a6358f39420072fa07cd2315e,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0517-0001.jpeg,NORMAL
+0f3a2b44db08e5190b678a93326ce1d6072dd8b9886b6e4cde864cf6ba3c0a04,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/NORMAL2-IM-0282-0001.jpeg,NORMAL
+112195a14e73197166b6ee2213f7de171a6a2f75b4f2846211986a0507cf4f13,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0459-0001.jpeg,NORMAL
+18c464a193b83a261f8234af07c010ac7d4f69bbd4d0f43f883486c1ee17d376,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0602-0001.jpeg,NORMAL
+1b0cc79a57b88cc4bc7988227aad571797d7eebcf2d08377492c8633e4037acb,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0734-0001.jpeg,NORMAL
+1c75c3e09d29240faf464e9d5a540af916619c83a971e30319df71d4356c98c0,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0774-0001.jpeg,NORMAL
+1d4fead2efa666acf1d1c8bd05e60629b8f45495f3355429af4ec2555c755cec,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-1318-0001.jpeg,NORMAL
+220c68fda9b7f3e5b2194744215f0805a4bbb148c1c8a471635ec90857ecb1dc,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/NORMAL2-IM-0292-0001.jpeg,NORMAL
+2a9b9fafd5000ad7478cd55f50c2492feae5f59c8f83e5ad2614e944a20556ee,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/IM-0035-0001.jpeg,NORMAL
+2addede6ccd064df914c1f06c5a3255c6f7112529e37149a5884a4b1b76cde6c,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0183-0001.jpeg,NORMAL
+3853a4552e0bc9aea1f45b2e7ee27be5954cdf9a0365d7972663b62b5495d9ae,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0587-0001-0001.jpeg,NORMAL
+3dfed98094a33c78ce6963ceeaf20cb6d4b8aa3b561772e115ce785b3ceb5b30,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0828-0001.jpeg,NORMAL
+3feb85c57d28556d356b0aee0bca34d46ad14a4c1cfccdef4e711c47c3b97fe7,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0466-0001.jpeg,NORMAL
+43ed7909c169fb5db326e54219c0319935172d17b73131e6ade6beaef95c8d9e,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0521-0001.jpeg,NORMAL
+45117d08a44f6b4d8fdc6747f7e42a9690eba431f5977f1cb06254dea3243650,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/IM-0028-0001.jpeg,NORMAL
+47645478cce38f93ae296a1ec03753ccd9caa1c22a71bd112f730b989a12d647,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0670-0001.jpeg,NORMAL
+4fff5e796fcb4b46aba42ac2b92bb3f0ccdc8a3d6d23a9b9c58d37c3820eae62,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0957-0001.jpeg,NORMAL
+5178a78d9fb846389c62dcc377311bc7f9862c80786c27d58171e39bf1bbee13,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0413-0001.jpeg,NORMAL
+56004f026d7893f7c20c737740e41f78954e6c2774c3c4eaa1d2ae2b2bc6b882,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/IM-0045-0001.jpeg,NORMAL
+590e9bade62b8666c3223943092d0a623920a672fd3291ea19ed443c50c71143,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-1018-0001.jpeg,NORMAL
+5a3fc7cadc8dd6838db7d4fdf90c088f7269529c99c0abfdf2df28c1e7d52f55,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0627-0001.jpeg,NORMAL
+5a78ecdbdaf10b379e481dfde9abccdb7be44e5bb80956708c3686d4096b039c,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/IM-0013-0001.jpeg,NORMAL
+5b636b2959cc5b0028bf1680b1e979dfbf0b2739b36b3d58697111aa5e17acf7,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/IM-0249-0001.jpeg,NORMAL
+5e1bec9808b6cf5b3ba0ccdc94083092d424a957cda4986fa60c05d88122c766,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0994-0001.jpeg,NORMAL
+696eea445b9d885c401f76432a1a57112176dde3f29092ce98cfd520e10848ee,3,"[""file_size_bytes"", ""height"", ""width""]",test/NORMAL/IM-0016-0001.jpeg,NORMAL
+6ae717480d396d450dcd008ebba16215b5ccf4e6b76d3b387c320c0718de76fd,3,"[""file_size_bytes"", ""height"", ""width""]",train/NORMAL/NORMAL2-IM-0390-0001.jpeg,NORMAL

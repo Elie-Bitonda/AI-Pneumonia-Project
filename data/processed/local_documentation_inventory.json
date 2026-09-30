@@ -1,0 +1,32 @@
+{
+  "dataset_documentation_candidates": [],
+  "dataset_non_image_files": [
+    "__MACOSX/._chest_xray",
+    "__MACOSX/chest_xray/._.DS_Store",
+    "__MACOSX/chest_xray/._test",
+    "__MACOSX/chest_xray/._train",
+    "__MACOSX/chest_xray/test/._.DS_Store",
+    "__MACOSX/chest_xray/test/._NORMAL",
+    "__MACOSX/chest_xray/test/._PNEUMONIA",
+    "__MACOSX/chest_xray/train/._.DS_Store",
+    "__MACOSX/chest_xray/train/._NORMAL",
+    "__MACOSX/chest_xray/train/._PNEUMONIA",
+    "__MACOSX/chest_xray/train/NORMAL/._.DS_Store",
+    "__MACOSX/chest_xray/train/PNEUMONIA/._.DS_Store",
+    "__MACOSX/chest_xray/val/._.DS_Store",
+    "__MACOSX/chest_xray/val/NORMAL/._.DS_Store",
+    "__MACOSX/chest_xray/val/PNEUMONIA/._.DS_Store",
+    "chest_xray/.DS_Store",
+    "chest_xray/test/.DS_Store",
+    "chest_xray/train/.DS_Store",
+    "chest_xray/train/NORMAL/.DS_Store",
+    "chest_xray/train/PNEUMONIA/.DS_Store",
+    "chest_xray/val/.DS_Store",
+    "chest_xray/val/NORMAL/.DS_Store",
+    "chest_xray/val/PNEUMONIA/.DS_Store"
+  ],
+  "archive_name": "archive.zip",
+  "archive_entry_count": 17591,
+  "archive_documentation_candidates": [],
+  "provenance_warning": "Project README and reports were authored during this audit; they do not independently establish patient identity."
+}

@@ -1,0 +1,27 @@
+# Never version medical image data or downloaded dataset archives.
+data/raw/**
+!data/raw/.gitkeep
+chest_xray/
+*.zip
+*.jpg
+*.jpeg
+*.png
+*.JPG
+*.JPEG
+*.PNG
+!figures/class_distribution.png
+!figures/*.png
+!figures/manual_review/*.png
+.venv/
+venv/
+.mplconfig/
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+.ipynb_checkpoints/
+.mplconfig/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+__MACOSX/

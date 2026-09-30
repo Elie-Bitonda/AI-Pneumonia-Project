@@ -1,0 +1,155 @@
+sheet,thumbnail_number,filepath,target_label,reason
+A_top30_01.png,1,train/NORMAL/NORMAL2-IM-0899-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""mean_intensity"", ""width""]"
+A_top30_01.png,2,train/NORMAL/NORMAL2-IM-1176-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,3,train/NORMAL/NORMAL2-IM-0927-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,4,train/NORMAL/IM-0692-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,5,train/NORMAL/IM-0517-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,6,test/NORMAL/NORMAL2-IM-0282-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,7,train/NORMAL/IM-0459-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,8,train/NORMAL/NORMAL2-IM-0602-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,9,train/NORMAL/IM-0734-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,10,train/NORMAL/NORMAL2-IM-0774-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,11,train/NORMAL/NORMAL2-IM-1318-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,12,test/NORMAL/NORMAL2-IM-0292-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,13,test/NORMAL/IM-0035-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,14,train/NORMAL/IM-0183-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_01.png,15,train/NORMAL/NORMAL2-IM-0587-0001-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,1,train/NORMAL/NORMAL2-IM-0828-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,2,train/NORMAL/NORMAL2-IM-0466-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,3,train/NORMAL/IM-0521-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,4,test/NORMAL/IM-0028-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,5,train/NORMAL/IM-0670-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,6,train/NORMAL/NORMAL2-IM-0957-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,7,train/NORMAL/IM-0413-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,8,test/NORMAL/IM-0045-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,9,train/NORMAL/NORMAL2-IM-1018-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,10,train/NORMAL/NORMAL2-IM-0627-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,11,test/NORMAL/IM-0013-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,12,train/NORMAL/IM-0249-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,13,train/NORMAL/NORMAL2-IM-0994-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,14,test/NORMAL/IM-0016-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+A_top30_02.png,15,train/NORMAL/NORMAL2-IM-0390-0001.jpeg,NORMAL,"[""file_size_bytes"", ""height"", ""width""]"
+B_width.png,1,train/PNEUMONIA/person1693_bacteria_4485.jpeg,BACTERIAL_PNEUMONIA,low width=399.00
+B_width.png,2,train/PNEUMONIA/person1676_bacteria_4441.jpeg,BACTERIAL_PNEUMONIA,low width=407.00
+B_width.png,3,train/PNEUMONIA/person279_bacteria_1316.jpeg,BACTERIAL_PNEUMONIA,high width=2637.00
+B_width.png,4,train/PNEUMONIA/person279_bacteria_1315.jpeg,BACTERIAL_PNEUMONIA,high width=2772.00
+B_width.png,5,train/NORMAL/NORMAL2-IM-1356-0001.jpeg,NORMAL,low width=912.00
+B_width.png,6,train/NORMAL/NORMAL2-IM-1419-0001.jpeg,NORMAL,low width=976.00
+B_width.png,7,train/NORMAL/IM-0521-0001.jpeg,NORMAL,high width=2890.00
+B_width.png,8,train/NORMAL/NORMAL2-IM-1257-0001.jpeg,NORMAL,high width=2916.00
+B_width.png,9,train/PNEUMONIA/person407_virus_811.jpeg,VIRAL_PNEUMONIA,low width=384.00
+B_width.png,10,train/PNEUMONIA/person325_virus_660.jpeg,VIRAL_PNEUMONIA,low width=400.00
+B_width.png,11,train/PNEUMONIA/person453_virus_935.jpeg,VIRAL_PNEUMONIA,high width=2273.00
+B_width.png,12,train/PNEUMONIA/person467_virus_961.jpeg,VIRAL_PNEUMONIA,high width=2309.00
+C_height.png,1,train/PNEUMONIA/person1689_bacteria_4474.jpeg,BACTERIAL_PNEUMONIA,low height=144.00
+C_height.png,2,train/PNEUMONIA/person1684_bacteria_4462.jpeg,BACTERIAL_PNEUMONIA,low height=151.00
+C_height.png,3,train/PNEUMONIA/person1544_bacteria_4035.jpeg,BACTERIAL_PNEUMONIA,high height=2104.00
+C_height.png,4,train/PNEUMONIA/person1544_bacteria_4033.jpeg,BACTERIAL_PNEUMONIA,high height=2272.00
+C_height.png,5,test/NORMAL/NORMAL2-IM-0256-0001.jpeg,NORMAL,low height=496.00
+C_height.png,6,test/NORMAL/IM-0022-0001.jpeg,NORMAL,low height=617.00
+C_height.png,7,train/NORMAL/NORMAL2-IM-0994-0001.jpeg,NORMAL,high height=2663.00
+C_height.png,8,test/NORMAL/NORMAL2-IM-0030-0001.jpeg,NORMAL,high height=2713.00
+C_height.png,9,train/PNEUMONIA/person407_virus_811.jpeg,VIRAL_PNEUMONIA,low height=127.00
+C_height.png,10,train/PNEUMONIA/person325_virus_661.jpeg,VIRAL_PNEUMONIA,low height=132.00
+C_height.png,11,train/PNEUMONIA/person799_virus_1431.jpeg,VIRAL_PNEUMONIA,high height=2184.00
+C_height.png,12,train/PNEUMONIA/person755_virus_1380.jpeg,VIRAL_PNEUMONIA,high height=2304.00
+D_aspect_ratio.png,1,train/PNEUMONIA/person1557_bacteria_4065.jpeg,BACTERIAL_PNEUMONIA,low aspect_ratio=0.92
+D_aspect_ratio.png,2,train/PNEUMONIA/person994_bacteria_2922.jpeg,BACTERIAL_PNEUMONIA,low aspect_ratio=0.93
+D_aspect_ratio.png,3,train/PNEUMONIA/person1732_bacteria_4564.jpeg,BACTERIAL_PNEUMONIA,high aspect_ratio=3.15
+D_aspect_ratio.png,4,train/PNEUMONIA/person1684_bacteria_4462.jpeg,BACTERIAL_PNEUMONIA,high aspect_ratio=3.27
+D_aspect_ratio.png,5,train/NORMAL/NORMAL2-IM-0818-0001-0002.jpeg,NORMAL,low aspect_ratio=0.88
+D_aspect_ratio.png,6,train/NORMAL/NORMAL2-IM-1038-0001.jpeg,NORMAL,low aspect_ratio=0.89
+D_aspect_ratio.png,7,test/NORMAL/IM-0073-0001.jpeg,NORMAL,high aspect_ratio=2.03
+D_aspect_ratio.png,8,test/NORMAL/IM-0022-0001.jpeg,NORMAL,high aspect_ratio=2.11
+D_aspect_ratio.png,9,train/PNEUMONIA/person1147_virus_1917.jpeg,VIRAL_PNEUMONIA,low aspect_ratio=0.84
+D_aspect_ratio.png,10,train/PNEUMONIA/person799_virus_1431.jpeg,VIRAL_PNEUMONIA,low aspect_ratio=0.92
+D_aspect_ratio.png,11,train/PNEUMONIA/person325_virus_659.jpeg,VIRAL_PNEUMONIA,high aspect_ratio=3.18
+D_aspect_ratio.png,12,train/PNEUMONIA/person325_virus_661.jpeg,VIRAL_PNEUMONIA,high aspect_ratio=3.38
+E_mean_intensity.png,1,train/PNEUMONIA/person30_bacteria_156.jpeg,BACTERIAL_PNEUMONIA,low mean_intensity=60.69
+E_mean_intensity.png,2,train/PNEUMONIA/person501_bacteria_2113.jpeg,BACTERIAL_PNEUMONIA,low mean_intensity=67.10
+E_mean_intensity.png,3,train/PNEUMONIA/person1405_bacteria_3564.jpeg,BACTERIAL_PNEUMONIA,high mean_intensity=201.84
+E_mean_intensity.png,4,train/PNEUMONIA/person1413_bacteria_3615.jpeg,BACTERIAL_PNEUMONIA,high mean_intensity=221.54
+E_mean_intensity.png,5,train/NORMAL/NORMAL2-IM-0771-0001.jpeg,NORMAL,low mean_intensity=73.30
+E_mean_intensity.png,6,test/NORMAL/NORMAL2-IM-0343-0001.jpeg,NORMAL,low mean_intensity=80.07
+E_mean_intensity.png,7,train/NORMAL/NORMAL2-IM-0707-0001.jpeg,NORMAL,high mean_intensity=168.39
+E_mean_intensity.png,8,train/NORMAL/NORMAL2-IM-0899-0001.jpeg,NORMAL,high mean_intensity=169.64
+E_mean_intensity.png,9,test/PNEUMONIA/person14_virus_44.jpeg,VIRAL_PNEUMONIA,low mean_intensity=58.72
+E_mean_intensity.png,10,train/PNEUMONIA/person88_virus_164.jpeg,VIRAL_PNEUMONIA,low mean_intensity=64.77
+E_mean_intensity.png,11,train/PNEUMONIA/person1549_virus_2690.jpeg,VIRAL_PNEUMONIA,high mean_intensity=180.86
+E_mean_intensity.png,12,train/PNEUMONIA/person1510_virus_2628.jpeg,VIRAL_PNEUMONIA,high mean_intensity=193.69
+F_std_intensity.png,1,train/PNEUMONIA/person1413_bacteria_3615.jpeg,BACTERIAL_PNEUMONIA,low std_intensity=20.42
+F_std_intensity.png,2,train/PNEUMONIA/person636_bacteria_2527.jpeg,BACTERIAL_PNEUMONIA,low std_intensity=20.96
+F_std_intensity.png,3,train/PNEUMONIA/person1338_bacteria_3397.jpeg,BACTERIAL_PNEUMONIA,high std_intensity=82.74
+F_std_intensity.png,4,train/PNEUMONIA/person1944_bacteria_4869.jpeg,BACTERIAL_PNEUMONIA,high std_intensity=86.40
+F_std_intensity.png,5,test/NORMAL/IM-0022-0001.jpeg,NORMAL,low std_intensity=33.04
+F_std_intensity.png,6,train/NORMAL/NORMAL2-IM-0771-0001.jpeg,NORMAL,low std_intensity=38.17
+F_std_intensity.png,7,train/NORMAL/NORMAL2-IM-1064-0001.jpeg,NORMAL,high std_intensity=80.41
+F_std_intensity.png,8,train/NORMAL/IM-0228-0001.jpeg,NORMAL,high std_intensity=83.10
+F_std_intensity.png,9,train/PNEUMONIA/person108_virus_199.jpeg,VIRAL_PNEUMONIA,low std_intensity=24.26
+F_std_intensity.png,10,test/PNEUMONIA/person14_virus_44.jpeg,VIRAL_PNEUMONIA,low std_intensity=25.44
+F_std_intensity.png,11,train/PNEUMONIA/person924_virus_1581.jpeg,VIRAL_PNEUMONIA,high std_intensity=85.72
+F_std_intensity.png,12,train/PNEUMONIA/person162_virus_320.jpeg,VIRAL_PNEUMONIA,high std_intensity=87.48
+H_near_duplicates_01.png,1,train/PNEUMONIA/person1313_bacteria_3320.jpeg,BACTERIAL_PNEUMONIA,"pair 1, pHash distance=4"
+H_near_duplicates_01.png,2,test/NORMAL/NORMAL2-IM-0033-0001.jpeg,NORMAL,"pair 1, pHash distance=4"
+H_near_duplicates_01.png,3,train/NORMAL/NORMAL2-IM-0652-0001.jpeg,NORMAL,"pair 2, pHash distance=4"
+H_near_duplicates_01.png,4,test/PNEUMONIA/person50_virus_102.jpeg,VIRAL_PNEUMONIA,"pair 2, pHash distance=4"
+H_near_duplicates_01.png,5,train/NORMAL/NORMAL2-IM-0926-0001.jpeg,NORMAL,"pair 3, pHash distance=4"
+H_near_duplicates_01.png,6,test/PNEUMONIA/person79_virus_148.jpeg,VIRAL_PNEUMONIA,"pair 3, pHash distance=4"
+H_near_duplicates_01.png,7,train/NORMAL/IM-0300-0001.jpeg,NORMAL,"pair 4, pHash distance=4"
+H_near_duplicates_01.png,8,test/PNEUMONIA/person35_virus_80.jpeg,VIRAL_PNEUMONIA,"pair 4, pHash distance=4"
+H_near_duplicates_01.png,9,val/NORMAL/NORMAL2-IM-1431-0001.jpeg,NORMAL,"pair 5, pHash distance=4"
+H_near_duplicates_01.png,10,test/PNEUMONIA/person1679_virus_2896.jpeg,VIRAL_PNEUMONIA,"pair 5, pHash distance=4"
+H_near_duplicates_01.png,11,test/PNEUMONIA/person79_virus_148.jpeg,VIRAL_PNEUMONIA,"pair 6, pHash distance=4"
+H_near_duplicates_01.png,12,train/NORMAL/NORMAL2-IM-1104-0001.jpeg,NORMAL,"pair 6, pHash distance=4"
+H_near_duplicates_01.png,13,train/NORMAL/IM-0515-0001.jpeg,NORMAL,"pair 7, pHash distance=4"
+H_near_duplicates_01.png,14,test/PNEUMONIA/person50_virus_102.jpeg,VIRAL_PNEUMONIA,"pair 7, pHash distance=4"
+H_near_duplicates_01.png,15,train/PNEUMONIA/person1484_bacteria_3878.jpeg,BACTERIAL_PNEUMONIA,"pair 8, pHash distance=4"
+H_near_duplicates_01.png,16,test/NORMAL/NORMAL2-IM-0345-0001.jpeg,NORMAL,"pair 8, pHash distance=4"
+H_near_duplicates_02.png,1,train/NORMAL/NORMAL2-IM-1176-0001.jpeg,NORMAL,"pair 66, pHash distance=2"
+H_near_duplicates_02.png,2,train/NORMAL/NORMAL2-IM-0892-0001.jpeg,NORMAL,"pair 66, pHash distance=2"
+H_near_duplicates_02.png,3,train/NORMAL/IM-0237-0001.jpeg,NORMAL,"pair 67, pHash distance=2"
+H_near_duplicates_02.png,4,train/NORMAL/NORMAL2-IM-1350-0001.jpeg,NORMAL,"pair 67, pHash distance=2"
+H_near_duplicates_02.png,5,train/NORMAL/IM-0507-0001.jpeg,NORMAL,"pair 68, pHash distance=2"
+H_near_duplicates_02.png,6,train/NORMAL/IM-0697-0001.jpeg,NORMAL,"pair 68, pHash distance=2"
+H_near_duplicates_02.png,7,train/NORMAL/IM-0307-0001.jpeg,NORMAL,"pair 69, pHash distance=2"
+H_near_duplicates_02.png,8,train/NORMAL/NORMAL2-IM-0849-0001.jpeg,NORMAL,"pair 69, pHash distance=2"
+H_near_duplicates_02.png,9,train/NORMAL/IM-0307-0001.jpeg,NORMAL,"pair 70, pHash distance=2"
+H_near_duplicates_02.png,10,train/NORMAL/IM-0286-0001.jpeg,NORMAL,"pair 70, pHash distance=2"
+H_near_duplicates_02.png,11,train/NORMAL/NORMAL2-IM-1267-0001.jpeg,NORMAL,"pair 71, pHash distance=2"
+H_near_duplicates_02.png,12,train/NORMAL/IM-0557-0001.jpeg,NORMAL,"pair 71, pHash distance=2"
+H_near_duplicates_02.png,13,train/NORMAL/IM-0476-0001.jpeg,NORMAL,"pair 72, pHash distance=2"
+H_near_duplicates_02.png,14,train/NORMAL/IM-0286-0001.jpeg,NORMAL,"pair 72, pHash distance=2"
+H_near_duplicates_02.png,15,train/NORMAL/NORMAL2-IM-1020-0001-0002.jpeg,NORMAL,"pair 73, pHash distance=2"
+H_near_duplicates_02.png,16,train/NORMAL/NORMAL2-IM-1041-0001.jpeg,NORMAL,"pair 73, pHash distance=2"
+H_near_duplicates_03.png,1,test/NORMAL/IM-0063-0001.jpeg,NORMAL,"pair 49, pHash distance=2"
+H_near_duplicates_03.png,2,train/NORMAL/NORMAL2-IM-1226-0001.jpeg,NORMAL,"pair 49, pHash distance=2"
+H_near_duplicates_03.png,3,train/NORMAL/NORMAL2-IM-1261-0001.jpeg,NORMAL,"pair 74, pHash distance=2"
+H_near_duplicates_03.png,4,train/NORMAL/NORMAL2-IM-0814-0001.jpeg,NORMAL,"pair 74, pHash distance=2"
+H_near_duplicates_03.png,5,train/NORMAL/IM-0674-0001.jpeg,NORMAL,"pair 75, pHash distance=2"
+H_near_duplicates_03.png,6,train/NORMAL/IM-0266-0001.jpeg,NORMAL,"pair 75, pHash distance=2"
+H_near_duplicates_03.png,7,train/NORMAL/NORMAL2-IM-1332-0001.jpeg,NORMAL,"pair 76, pHash distance=2"
+H_near_duplicates_03.png,8,train/NORMAL/IM-0299-0001.jpeg,NORMAL,"pair 76, pHash distance=2"
+H_near_duplicates_03.png,9,train/NORMAL/NORMAL2-IM-1114-0001.jpeg,NORMAL,"pair 77, pHash distance=2"
+H_near_duplicates_03.png,10,train/NORMAL/NORMAL2-IM-1136-0001.jpeg,NORMAL,"pair 77, pHash distance=2"
+H_near_duplicates_03.png,11,train/NORMAL/IM-0495-0001.jpeg,NORMAL,"pair 78, pHash distance=2"
+H_near_duplicates_03.png,12,train/NORMAL/IM-0266-0001.jpeg,NORMAL,"pair 78, pHash distance=2"
+H_near_duplicates_03.png,13,train/NORMAL/NORMAL2-IM-0869-0001.jpeg,NORMAL,"pair 79, pHash distance=2"
+H_near_duplicates_03.png,14,train/NORMAL/NORMAL2-IM-0395-0001.jpeg,NORMAL,"pair 79, pHash distance=2"
+H_near_duplicates_03.png,15,train/NORMAL/IM-0401-0001.jpeg,NORMAL,"pair 80, pHash distance=2"
+H_near_duplicates_03.png,16,train/NORMAL/IM-0544-0001.jpeg,NORMAL,"pair 80, pHash distance=2"
+H_near_duplicates_04.png,1,train/NORMAL/NORMAL2-IM-0416-0001.jpeg,NORMAL,"pair 81, pHash distance=4"
+H_near_duplicates_04.png,2,train/NORMAL/NORMAL2-IM-0936-0001.jpeg,NORMAL,"pair 81, pHash distance=4"
+H_near_duplicates_04.png,3,train/NORMAL/NORMAL2-IM-0842-0001.jpeg,NORMAL,"pair 82, pHash distance=4"
+H_near_duplicates_04.png,4,train/NORMAL/NORMAL2-IM-1348-0001.jpeg,NORMAL,"pair 82, pHash distance=4"
+H_near_duplicates_04.png,5,train/NORMAL/NORMAL2-IM-1176-0001.jpeg,NORMAL,"pair 83, pHash distance=4"
+H_near_duplicates_04.png,6,train/NORMAL/IM-0557-0001.jpeg,NORMAL,"pair 83, pHash distance=4"
+H_near_duplicates_04.png,7,train/NORMAL/NORMAL2-IM-1176-0001.jpeg,NORMAL,"pair 84, pHash distance=4"
+H_near_duplicates_04.png,8,train/NORMAL/IM-0524-0001.jpeg,NORMAL,"pair 84, pHash distance=4"
+H_near_duplicates_04.png,9,train/NORMAL/NORMAL2-IM-1176-0001.jpeg,NORMAL,"pair 85, pHash distance=4"
+H_near_duplicates_04.png,10,train/NORMAL/IM-0719-0001.jpeg,NORMAL,"pair 85, pHash distance=4"
+H_near_duplicates_04.png,11,train/NORMAL/IM-0237-0001.jpeg,NORMAL,"pair 86, pHash distance=4"
+H_near_duplicates_04.png,12,train/NORMAL/IM-0364-0001.jpeg,NORMAL,"pair 86, pHash distance=4"
+H_near_duplicates_04.png,13,train/NORMAL/IM-0237-0001.jpeg,NORMAL,"pair 87, pHash distance=4"
+H_near_duplicates_04.png,14,train/NORMAL/IM-0304-0001.jpeg,NORMAL,"pair 87, pHash distance=4"
+H_near_duplicates_04.png,15,train/NORMAL/IM-0237-0001.jpeg,NORMAL,"pair 50, pHash distance=4"
+H_near_duplicates_04.png,16,test/NORMAL/NORMAL2-IM-0321-0001.jpeg,NORMAL,"pair 50, pHash distance=4"

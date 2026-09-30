@@ -1,0 +1,7 @@
+variable,N,auxiliary_R_squared,VIF,VIF_gt_10,auxiliary_design_rank,intercept_included,used_as_CNN_feature
+width,5824,0.9354853089753905,15.500345489038205,True,6,True,False
+height,5824,0.9671324604985789,30.425155492907077,True,6,True,False
+aspect_ratio,5824,0.769200815377165,4.332770939525498,False,6,True,False
+file_size_bytes,5824,0.6974879692488443,3.3056536545569415,False,6,True,False
+mean_intensity,5824,0.02542693925932127,1.0260903366649563,False,6,True,False
+std_intensity,5824,0.24289821419437874,1.3208263654218095,False,6,True,False

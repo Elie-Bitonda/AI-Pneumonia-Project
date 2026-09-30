@@ -1,0 +1,43 @@
+{
+  "dataset_root_name": "chest_xray",
+  "total_discovered": 17568,
+  "readable": 11712,
+  "unreadable": 5856,
+  "unreadable_macos_sidecars": 5856,
+  "unique_readable_sha256": 5824,
+  "readable_hash_label_conflict_groups": 0,
+  "readable_hash_groups_cross_source_splits": 0,
+  "unique_sha256": 7345,
+  "duplicate_hash_groups": 5825,
+  "files_in_duplicate_hash_groups": 16048,
+  "redundant_byte_copies": 10223,
+  "duplicate_filename_groups": 5856,
+  "label_failures": 0,
+  "hash_label_conflict_groups": 1,
+  "complete_metadata_rows_all_columns": 0,
+  "rows_with_missing_values_all_columns": 17568,
+  "complete_rows_excluding_optional_error_fields": 8544,
+  "unique_candidate_patient_ids": 1674,
+  "confirmed_patient_ids": 0,
+  "files_with_candidate_patient_id": 8544,
+  "candidate_patients_multiple_files": 1674,
+  "candidate_patients_multiple_distinct_hashes": 1109,
+  "candidate_patients_cross_source_splits": 170,
+  "candidate_patients_multiple_labels": 979,
+  "grouping_assessment": "Duplicate isolation required; patient grouping pending ID validation. Partial candidate IDs do not justify independent per-image folds.",
+  "quality_flag_rows": 2574,
+  "quality_flagged_images": 2188,
+  "class_max_min_ratio": 1.8620227729403884,
+  "original_split_counts": {
+    "train": 15648,
+    "test": 1872,
+    "val": 48
+  },
+  "versions": {
+    "python": "3.14.7",
+    "pillow": "12.3.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "matplotlib": "3.11.2"
+  }
+}
