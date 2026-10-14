@@ -11,9 +11,9 @@ category labels, not awarded marks. Paths are relative to the project root.
 |---|---|---|---|
 | Project structure and dependency declaration | `.gitignore`, `requirements.txt`, `data/raw/`, `data/processed/`, `phase1_strategy/`, `phase2_implementation/notebooks/`, `src/`, `figures/` | COMPLETE | None for directory coverage |
 | README problem, domain, source, empirical N, image P, Y, Multi-Class Classification, setup, reproduction, structure, leakage and nonclinical disclaimer | `README.md` | COMPLETE | Keep synchronized with final report |
-| Git version tracking and deliverable status | `git rev-parse`, `git remote -v`, `git status --short` all report not a Git repository | MISSING | Initialize/version required deliverables separately; current files are unversioned, not an enumerable Git untracked list |
-| GitHub remote | No Git repository or configured remote | MISSING | Configure required GitHub delivery separately; nothing was pushed or published |
-| Current full-suite reproducibility | `tests/`; `phase1_strategy/phase1c_completion_verification.md`; four new rubric tests passed | PARTIAL | Resolve Windows Application Control blocking SciPy DLLs and rerun complete suite; earlier 15 passed, latest existing-suite rerun had eight executable passes and seven unable to load |
+| Git version tracking and deliverable status | Live repository `Elie-Bitonda/AI-Pneumonia-Project`; committed source, tests, audit artifacts and documentation | COMPLETE | Keep final PDF/source synchronized with the repository |
+| GitHub remote | `https://github.com/Elie-Bitonda/AI-Pneumonia-Project` | COMPLETE | None |
+| Current full-suite reproducibility | `.github/workflows/phase1-tests.yml`; GitHub Actions clean Linux run | COMPLETE | Current CI passes all 19 committed unit tests and metadata-only evidence checks |
 | Written Phase 1 Strategy Report | `phase1_strategy/Phase1_Strategy_Report.pdf` is a zero-byte placeholder | MISSING | Write and visually verify the report using completed evidence |
 
 ## 2. Data Audit & Metadata Inventory — 20 pts
@@ -57,17 +57,18 @@ category labels, not awarded marks. Paths are relative to the project root.
 
 | Requirement | Evidence/file | Status | Any action still required |
 |---|---|---|---|
-| Reproducible outer five-fold stratification | `phase1_strategy/split_and_leakage_plan.md` | COMPLETE | Proposed StratifiedKFold(5, shuffle=True, random_state=42); no folds generated |
-| Exact intended internal proportions | Same split plan; `README.md` | COMPLETE | Outer 80/20, inner 10% of development => approximately 72/8/20; integer rounding acknowledged |
+| Reproducible outer five-fold stratification | `phase1_strategy/split_and_leakage_plan.md`; `patient_identity_assessment.md` | COMPLETE | Primary plan is StratifiedGroupKFold(5, shuffle=True, random_state=42) using conservative relation groups; ordinary StratifiedKFold is sensitivity only |
+| Exact intended internal proportions | Same split plan; `README.md` | COMPLETE | Outer 80/20; nested group-aware selection inside development; final fit reserves ~10% of development for early stopping, giving approximately 72/8/20 |
 | Training-only fitted state, weights, sampling and augmentation | Same split plan | COMPLETE | Use actual training subset, not all outer development data |
-| Internal-only early stopping and tuning, untouched outer evaluation | Same split plan | COMPLETE | Lock fold choices before final evaluation; do not tune from outer scores |
-| Duplicate controls and patient limitation | Same split plan; `phase1_strategy/patient_identity_assessment.md`, `near_duplicate_assessment.md` | COMPLETE | Before folds, adjudicate confirmed relationships; do not fabricate patient groups or claim patient-independent validation |
+| Internal-only early stopping and tuning, untouched outer evaluation | Same split plan | COMPLETE | Architecture/hyperparameter selection uses inner group-aware validation; outer scores never select the winning architecture |
+| Duplicate controls and identity limitation | Same split plan; `phase1_strategy/patient_identity_assessment.md`, `near_duplicate_assessment.md` | COMPLETE | Conservative filename relation groups control leakage without being presented as verified patient identities |
 
 ## Readiness and outstanding work
 
 No additional numerical Phase 1 analysis is required to write the report.
-Remaining delivery gaps are Git/GitHub setup, fresh full-suite verification
-after the environment block is resolved, and the report itself. Provisional
+Git/GitHub setup and clean-environment full-suite verification are now complete.
+The remaining delivery item is replacing the report placeholder with the final
+reviewed PDF/source. Provisional
 cohort adjudication and unresolved identity/provenance/generalization issues
 must be stated in the report and addressed or explicitly accepted before
 modeling. No Phase 2 work, raw modifications, augmentation or folds occurred.
