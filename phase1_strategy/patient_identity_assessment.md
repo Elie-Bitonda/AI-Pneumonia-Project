@@ -1,75 +1,56 @@
-# Patient identity assessment — local evidence only
+# Identity evidence and leakage-control grouping
 
-Patient-level grouping cannot currently be justified from the available filename metadata.
+The local files do not provide a verified patient identity key, so I do not
+claim that filename tokens establish clinical identity. Phase 1 nevertheless
+shows clear relation evidence that should not be ignored during validation.
 
-The current recommendation is
-`StratifiedKFold(n_splits=5, shuffle=True, random_state=42)` after content
-deduplication and manual selection review. Five folds meet the assignment,
-shuffling removes source-order dependence, and seed 42 makes the future
-allocation reproducible. No folds have been created. Do not claim patient
-independence: repeated patients and related images can still cross folds.
-Only validated global patient identities could justify revisiting
-`StratifiedGroupKFold`.
+## Evidence
 
-## Evidence searched
+After SHA-256 content deduplication:
 
-Only local evidence was used for this follow-up. The dataset tree contains
-17,591 files: 17,568 image-extension paths, 15 other AppleDouble-style metadata
-paths and eight `.DS_Store` files. A search for `.md`, `.txt`, `.csv`, `.json`,
-`.pdf`, `.html`, and `.xml` documentation found no candidates in the dataset.
-The ZIP central directory contains 17,591 entries and no documentation
-candidates. All 23 non-image paths are listed in
-`data/processed/local_documentation_inventory.json`. The project's README,
-audit reports and empty report placeholders were created during this work;
-they are not independent source documentation or a patient identity key.
-No external sources were searched for this follow-up.
-
-## Observed conventions after byte-content deduplication
-
-| Class | Observed filename convention | Canonical count | ID interpretation |
+| Class | Filename convention | Canonical count | Leakage-control interpretation |
 |---|---|---:|---|
-| NORMAL | `IM-<number>-<number>[-<number>].jpeg` | 666 | Unproven; left blank |
-| NORMAL | `NORMAL2-IM-<number>-<number>[-<number>].jpeg` | 913 | Unproven; left blank |
-| BACTERIAL_PNEUMONIA | `person<number>_bacteria_<number>.jpeg` | 2,760 | Candidate only |
-| VIRAL_PNEUMONIA | `person<number>_virus_<number>.jpeg` | 1,484 | Candidate only |
-| VIRAL_PNEUMONIA | `person447_virus_921_1.jpeg` | 1 | Extra suffix; strict ID parser rejects |
+| NORMAL | `IM-<number>-<number>[-<number>].jpeg` | 666 | group within IM family by leading numeric token |
+| NORMAL | `NORMAL2-IM-<number>-<number>[-<number>].jpeg` | 913 | group within NORMAL2-IM family by leading numeric token |
+| BACTERIAL_PNEUMONIA | `person<number>_bacteria_<number>.jpeg` | 2,760 | group by person<number> token |
+| VIRAL_PNEUMONIA | `person<number>_virus_<number>.jpeg` | 1,484 | group by person<number> token |
+| VIRAL_PNEUMONIA | `person447_virus_921_1.jpeg` | 1 | label is unambiguous; extra suffix blocks the strict identity parser |
 
-The final viral filename still has an unambiguous whole `virus` token and so
-has a parsed viral label. Its extra `_1` suffix has unknown meaning and is
-not silently removed to invent a patient identity.
+The strict patient-ID parser originally yielded 1,674 pneumonia candidate
+tokens; 170 crossed original source splits and 979 appeared under both
+pneumonia subtypes. Manual-review examples also show repeated adjacent
+filename tokens such as `person279_bacteria_1315/1316`,
+`person1544_bacteria_4033/4035`, and
+`person325_virus_659/660/661`.
 
-`patient_id_semantics_audit.csv` contains filename, parsed_candidate_id,
-class, convention and path for all 5,824 canonical contents.
-`patient_filename_examples.csv` provides exactly 20 representative filenames
-from each class (60 total), including both normal naming families and the
-viral suffix exception. Examples are chosen deterministically within each
-family and sorted by class and filename. Missing candidate IDs remain blank.
+These observations do not prove that the tokens are globally valid patient IDs.
+However, treating every image as independent would risk placing plausibly
+related examinations in different folds. For leakage prevention I therefore
+use conservative relation groups without converting them into patient claims.
 
-The original 8,544 paths matching the strict `personNNN_(bacteria|virus)_NNN`
-pattern yielded 1,674 numeric candidate identifiers. Of those, 170 spanned
-source splits and 979 spanned pneumonia subtypes. For example,
-`person100_bacteria_475.jpeg` and `person100_virus_184.jpeg` share a numeric
-token, but the available local files do not establish that they depict one
-patient. The overlaps are compatible with different namespaces, repeated
-patients or another undocumented convention. Neither shared identity nor
-independent identity can be inferred with confidence. Adding subtype or split
-to the candidate ID would conceal the ambiguity rather than resolve it.
+The current canonical data produce:
 
-## Label provenance is separate from patient identity
+- 1,443 Normal relation groups for 1,579 images; 74 groups contain >1 image.
+- 1,437 Bacterial groups for 2,760 images; 491 groups contain >1 image.
+- 1,216 Viral groups for 1,485 images; 157 groups contain >1 image.
+- 3,117 groups across all 5,824 images; 1,183 groups contain >1 image.
+- largest conservative group size: 31 images.
 
-Labels come from local folder/filename annotations, not independent clinical
-verification. `NORMAL` requires a `NORMAL` ancestor folder and no pneumonia
-subtype token. Pneumonia subtypes require `PNEUMONIA` plus exactly one whole
-`bacteria` or `virus` token, using the parser in `src/transformers.py`.
-`label_provenance.csv` supplies examples, rules and canonical class totals.
-The observed patterns support subtype parsing, but do not establish
-microbiological diagnoses or validate the namespace of patient numbers.
+## Phase 2 split decision
 
-## Remaining manual review
+Primary outer evaluation:
 
-Obtain source documentation or a verified identity key before making patient
-group claims. Investigate the extra viral suffix, inspect near-duplicates and
-quality flags, and confirm label provenance. Keep the candidate ID column for
-diagnostics only under the current plan; do not feed it as a feature or as a
-validated split group. Train-derived normalization, augmentation and weighting
-remain restricted to each future training fold.
+```python
+StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
+```
+
+The relation-group key is a leakage-control device, not a verified patient
+identifier. Over-grouping can slightly reduce class-balance precision, but
+under-grouping can inflate evaluation by allowing related images to cross
+training and evaluation roles. Ordinary `StratifiedKFold(5)` is retained only
+as a secondary sensitivity analysis; the grouped-versus-ungrouped performance
+difference will be reported as a leakage-sensitivity diagnostic.
+
+No fold files have been generated in Phase 1. Near-duplicate candidates remain
+review candidates; only a manually confirmed relation would be merged into the
+group structure before folds are frozen.
