@@ -93,12 +93,13 @@ The source folder and archive are additional existing local inputs, ignored
 by Git along with raw images, virtual environments, and caches. Nothing in
 this task commits data or initializes a repository.
 
-Repository inspection on 2026-09-30: this directory is **not a Git repository**.
-There is no configured Git remote or GitHub remote URL. Git uncommitted and
-untracked status cannot be enumerated; required deliverables are currently
-unversioned local files. The listed directories, `.gitignore`, and
-`requirements.txt` exist. Git initialization, commits and any required GitHub
-publication remain separate delivery actions; none was performed here.
+Repository status updated 2026-10-14: the project is version-controlled and
+published at https://github.com/Elie-Bitonda/AI-Pneumonia-Project. The required
+`.gitignore`, `requirements.txt`, README, source, tests, processed audit
+artifacts, figures, and strategy directory are tracked. Raw X-rays, the archive,
+virtual environments, and caches remain excluded. A GitHub Actions workflow
+installs the pinned Phase 1 environment in a clean Linux runner and executes the
+complete unit-test suite; the current run passes all 19 tests.
 
 ## Environment and exact reproduction commands
 
@@ -217,54 +218,33 @@ Use SHA-256 for identical bytes; it cannot detect re-encoded duplicates,
 near-duplicates or all images of the same patient. Assess those separately.
 No identical or related image may straddle training and evaluation folds.
 
-**Current plan after local integrity verification:**
-`StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`, on the approved
-content-deduplicated manifest. Patient-level grouping cannot currently be
-justified from the available filename metadata. Patient-level leakage remains
-a dataset limitation; content deduplication does not establish independence.
-See `phase1_strategy/patient_identity_assessment.md` for the local evidence.
-This supersedes the earlier tentative preference for patient grouping.
+**Current leakage-control plan after Phase 1 review:** use conservative
+filename-derived relation groups with
+`StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)` as the
+primary outer evaluation design. Pneumonia files sharing a `person<number>`
+token are kept together across subtype labels. Normal files are grouped within
+their observed filename family (`IM` versus `NORMAL2-IM`) by the leading
+numeric image token. These are **leakage-control groups, not verified patient
+identities**. The current canonical set yields 3,117 groups across 5,824
+images, including 1,183 multi-image groups; the largest group contains 31
+images. Ordinary `StratifiedKFold(5)` is retained only as a secondary
+leakage-sensitivity comparison.
 
-Conditional future option, only if globally reliable groups are validated:
-`StratifiedGroupKFold(n_splits=5, shuffle=False, random_state=None)`.
-The explicit no-shuffle choice gives reproducible allocation on the sorted
-manifest without an unused seed. Approximate stratification is constrained
-by patient groups; verify class counts and zero group overlap in every fold.
-When duplicates connect different patient IDs, investigate and then use
-connected patient/duplicate groups; never silently break the connection.
-Check at least five independent groups per class before planning five folds.
-See the [scikit-learn cross-validation documentation](https://scikit-learn.org/stable/modules/cross_validation.html).
+Five outer folds are feasible because the smallest class contains 1,485 images
+and 1,216 conservative relation groups. Architecture and hyperparameter
+selection among the custom CNN, ResNet-18, and EfficientNet-B0 will occur only
+inside each outer development set using inner group-aware validation. For the
+final fit in each outer iteration, approximately 10% of the 80% development
+portion is reserved group-aware for early stopping, giving roughly 72% training
+/ 8% internal validation / 20% untouched outer evaluation. No outer fold may
+influence model, preprocessing, or hyperparameter selection.
 
-Parameters for the current non-grouped plan:
-`StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`. Five folds satisfy
-the assignment, shuffling avoids folder-order artifacts, and 42 fixes the
-shuffle for reproduction. First resolve duplicates and verify at least five
-usable images per class. Missing IDs alone do not establish independence.
-With partially parsed IDs, do not assign synthetic per-image patient groups
-or claim patient-safe evaluation. Validate/obtain missing IDs, define a
-justified grouped subset, or explicitly document the residual leakage risk
-and rationale for any fallback. Repeated confirmed patients require grouping
-even if none cross the original source splits, since those splits are discarded.
-
-For Phase 2, decide resize dimensions and grayscale/RGB representation based
-on the selected architecture and reviewed audit. Consider aspect-preserving
-resize/padding to avoid distorting anatomy; document interpolation, padding,
-and any intensity scaling explicitly before implementation. Do not apply
-tabular outlier removal or SMOTE to image pixels. A fixed external pretrained
-normalization may be specified in advance; any normalization estimated from
-this dataset must be fitted only on each training fold. All augmentation,
-training-derived normalization, class weighting, sampling decisions and
-feature fitting belong inside each fold's training portion. Validation images
-receive only the fixed/in-training-fitted deterministic preprocessing. Keep
-hyperparameter selection separate from evaluation, using an inner validation
-procedure if tuning is performed. Plan per-class recall/precision/F1, macro-F1,
-balanced accuracy and confusion matrices, not accuracy alone.
-
-Before Phase 2, verify source provenance, candidate ID semantics, normal-image
-identity, duplicate/near-duplicate resolution, questionable subtype labels,
-quality cases, class denominators and group feasibility. A clean read and a
-parsed filename do not verify clinical label correctness.
-
+All train-derived normalization, class/sampling weights, learned
+transformations, and stochastic augmentation are fitted/applied on the active
+training subset only. Phase 2 will also include a metadata-only shortcut
+baseline and padding/crop/resize plus contrast-normalization sensitivity
+analyses. Temporal splitting is not applicable because trustworthy acquisition
+timestamps are unavailable.
 ## Dataset integrity verification follow-up
 
 After running the initial audit, reproduce the follow-up with:
@@ -404,10 +384,8 @@ Evidence and decisions:
 - [Exact split and leakage plan](phase1_strategy/split_and_leakage_plan.md)
 - [Rubric evidence coverage](phase1_strategy/rubric_completion_check.md)
 
-All four new utility tests passed on 2026-09-30. The earlier 15-test suite
-passed when Phase 1C was generated, but its latest rerun could execute only
-eight tests because Windows Application Control blocked SciPy DLL imports;
-seven tests could not load. No fresh full-suite pass is claimed. See
-`phase1_strategy/phase1c_completion_verification.md` for the recorded result.
-Resolve the runtime policy/environment issue and rerun the complete suite
-before claiming current full-suite reproducibility.
+The earlier Windows Application Control issue prevented SciPy-dependent tests
+from loading locally, so I moved the reproducibility check to a clean GitHub
+Actions Linux environment. The current CI workflow installs the pinned
+dependencies and passes the complete 19-test suite, including the integrity,
+pHash/BK-tree, missingness, VIF, and raw-byte-preservation unit tests.
