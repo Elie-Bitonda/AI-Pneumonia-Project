@@ -1,157 +1,111 @@
-# Planned partitioning, nested model selection, and leakage controls
+# Partitioning and leakage-prevention plan
 
-This document specifies Phase 2 behavior. No final fold memberships, CNN
-training, augmentation, or fitted image preprocessing were produced in Phase 1.
+This document defines the Phase 1 partitioning strategy and the controls needed
+to prevent preprocessing and duplicate-related leakage. No final fold
+memberships were generated during Phase 1.
 
-## Primary outer evaluation
+## Primary partitioning strategy
 
-After manual adjudication and a frozen modeling manifest, use:
+After the modeling manifest is frozen, use:
 
 ```python
 StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
 The conservative relation groups are defined in
-`phase1_strategy/patient_identity_assessment.md`. They prevent repeated
-filename-token relations from crossing roles without claiming verified patient
-identity. Five folds are feasible because the smallest class has 1,485 images
-and 1,216 relation groups.
+`phase1_strategy/patient_identity_assessment.md`. They are leakage-control
+units derived from filename relations and candidate review; they are not
+presented as verified patient IDs.
 
-The original Kaggle train/val/test folders remain provenance only. Temporal
-splitting is not applicable because trustworthy acquisition timestamps are not
-available.
+Five outer folds are feasible because the smallest class contains 1,485 images
+and at least 1,216 filename-derived relation groups before any additional
+candidate-edge merging.
 
-## Nested architecture and hyperparameter selection
+The original source `train/val/test` folders are retained as provenance only.
+A temporal split is not applicable because trustworthy acquisition timestamps
+are unavailable.
 
-The custom CNN, ResNet-18, and EfficientNet-B0 will not be compared on outer
-folds and then ranked using those same evaluation scores. Within each outer
-80% development set, architecture, preprocessing ablations, and
-hyperparameters are selected using inner two-fold stratified group-aware
-validation. The selected configuration is then refit on the outer development
-data, with approximately 10% of that development portion reserved group-aware
-for early stopping.
+## Intended role proportions
 
-The final fit in each outer iteration is therefore approximately:
+Each outer fold leaves approximately 80% of the cohort for development and 20%
+for outer evaluation. Within the development portion, approximately 10% is
+reserved group-aware for internal validation, giving roughly:
 
-| Role | Approximate share of cohort |
+| Role | Approximate share |
 |---|---:|
-| Actual model training | 72% |
-| Internal early-stopping validation | 8% |
-| Untouched outer evaluation | 20% |
+| Actual training | 72% |
+| Internal validation | 8% |
+| Outer evaluation | 20% |
 
-Exact integer counts vary because group constraints take priority over perfect
-class ratios. The outer fold is scored once after every decision is locked.
+Exact integer counts can differ because preserving group integrity takes
+priority over exact percentages.
 
-Ordinary `StratifiedKFold(5, shuffle=True, random_state=42)` is retained only
-as a secondary leakage-sensitivity analysis. It is not the headline estimate.
-
-## Role-specific leakage controls
+## Leakage isolation
 
 | Operation | Permitted data |
 |---|---|
 | Stochastic augmentation | active training subset only |
 | Dataset-derived normalization | active training subset only |
 | Class/sampling weights | active training labels/counts only |
-| Metadata-only shortcut baseline | fit inside the same group-aware training split |
-| Architecture/hyperparameter selection | inner group-aware validation only |
-| Early stopping/checkpoint selection | internal group-aware validation only |
+| Learned preprocessing transforms | active training subset only |
+| Preprocessing selection | internal validation only |
 | Outer performance estimate | untouched outer evaluation only |
 
-Fixed division by 255 and published ImageNet normalization constants do not
-estimate information from this dataset. Any fitted statistic must be recomputed
-inside the current training role.
+Fixed division by 255 and published pretrained normalization constants do not
+estimate information from this dataset. Any statistic learned from the data is
+recomputed inside the current training role.
 
-## Planned shortcut checks
+The full-cohort Phase 1 audit is descriptive. It is used to design the strategy,
+not to fit a transformation that is then reused across evaluation folds.
 
-Phase 2 will include:
+## Filename-derived relation groups
 
-1. a metadata-only multinomial baseline using width, height, aspect ratio,
-   file size, mean intensity, and intensity SD;
-2. padding/crop/direct-resize sensitivity experiments;
-3. a per-image contrast-normalization ablation after visual validation;
-4. Grad-CAM and border/marker occlusion checks to detect dependence on
-   padding, text, laterality markers, or peripheral non-lung regions; and
-5. grouped-versus-ungrouped CV comparison as a leakage-sensitivity estimate.
+The current filename-only base structure contains 3,117 groups across 5,824
+canonical contents. Per-class counts overlap because 979 `person<number>`
+tokens occur under both pneumonia subtypes:
 
-## Evaluation metrics
+`1,437 bacterial groups + 1,216 viral groups - 979 overlaps = 1,674 pneumonia groups`.
 
-Primary: macro-F1.
+Adding 1,443 Normal relation groups gives 3,117 groups overall.
 
-Also report: per-class recall/sensitivity, per-class precision/F1, balanced
-accuracy, macro one-vs-rest AUROC, overall accuracy as a secondary metric, and
-confusion matrices.
+Cross-subtype merging is a conservative leakage-control choice, not a claim
+that the shared token proves one patient. A subtype-separated alternative is
+retained as a sensitivity structure.
 
-## Before creating folds
+## Near-duplicate handling before folds
 
-I begin from the 3,117 filename-derived leakage-control groups. For every
-pHash candidate edge: confirmed relations are merged into the group graph,
-rejected edges are omitted, and unresolved edges are retained only as
-conservative split constraints so their endpoints cannot cross training and
-evaluation roles. Connected components are formed before partitioning and
-group feasibility is rechecked. Therefore 3,117 is the filename-only base
-group count, not a promise of the final post-adjudication count. pHash
-similarity alone never establishes patient identity or changes a class label.
+The pHash screen produced 223 candidate pairs. Similarity alone never confirms
+identity or a duplicate examination.
 
+Before partitioning:
+- confirmed related-image edges are merged into the relation graph;
+- rejected edges are omitted;
+- unresolved edges remain as split-only constraints so their endpoints cannot
+  cross training and evaluation roles.
 
-## Fixed Phase 2 search budget
+Connected components are formed after these decisions and group feasibility is
+checked again. Therefore 3,117 is the filename-only base group count, not a
+guaranteed final count after candidate review.
 
-To keep nested selection feasible, the search is staged rather than taking the
-Cartesian product of every architecture and preprocessing option. The split
-seed and model initialization seed are both 42, batch size is 32, each candidate
-runs for at most 20 epochs, and early stopping patience is 3 epochs.
+## Exact duplicates
 
-1. Using the custom CNN only, compare two geometry candidates: aspect-preserving
-   padding and the predeclared crop/resize alternative.
-2. On the selected geometry, compare contrast normalization off versus on using
-   the custom CNN.
-3. With geometry and contrast fixed, compare the custom CNN, ResNet-18, and
-   EfficientNet-B0.
+Exact SHA-256 duplicates are canonicalized before splitting, so the same byte
+content cannot appear in more than one modeling role. Alternative source paths
+are preserved in the manifest for provenance but are not treated as independent
+observations.
 
-The fixed learning rates are 1e-3 for the custom CNN and 3e-4 for pretrained
-backbones, with weight decay 1e-4. This defines the primary-search budget: seven candidate configurations per
-outer fold, each evaluated in two inner group-aware folds, followed by one
-final fit, for at most 75 CNN fits across the five outer folds. The locked
-grouped-versus-ungrouped sensitivity run, metadata-only baselines, and
-diagnostic probes are reported separately and are not counted in this
-primary-search budget. If
-compute must be reduced, the direct-resize diagnostic is removed first, then
-the optional contrast ablation; the three required architectures and grouped
-outer evaluation are not removed.
+## Final safeguards before partitioning
 
-## Shortcut-gated preprocessing selection
+Before folds are created:
+1. complete or record the status of near-duplicate review;
+2. record any evidence-based image exclusions;
+3. freeze canonical membership by SHA-256;
+4. form the final leakage-control components;
+5. verify that every retained relation component belongs to one and only one
+   outer role;
+6. recompute any training-derived preprocessing state independently within each
+   fold.
 
-Preprocessing is not selected by macro-F1 alone. The three-class label entropy
-is 1.056 nats, while original file size alone has MI 0.452 nats (42.8% of
-label entropy), so the original-metadata baseline is retained as evidence that
-the source contains substantial nuisance signal. It is not used to claim that
-a particular resize operation removed that signal.
-
-For each transformed representation I will also fit a representation-specific
-nuisance probe inside inner validation using only non-anatomical summaries
-available after transformation, such as padding fraction, border-only
-intensity/edge summaries, and post-transform border geometry. Let F1_img be
-CNN macro-F1, F1_nuis the representation-specific nuisance-probe macro-F1, and
-Delta_occ the absolute macro-F1 change under the prespecified border/marker
-occlusion check. A representation is eligible only if:
-
-((F1_nuis < 0.60) OR (F1_img - F1_nuis >= 0.10)) AND (Delta_occ <= 0.03).
-
-The 0.60, 0.10 and 0.03 values are prespecified exploratory engineering
-criteria, not clinical guarantees. Probe fitting, occlusion-based selection,
-and any justified threshold revision occur only inside internal validation.
-Passing the gate does not establish clinical validity; it only prevents
-performance alone from deciding preprocessing. If no candidate satisfies the
-gate, Phase 2 reports shortcut-control failure rather than selecting the
-highest-scoring representation.
-
-## Adjudication rule and non-blocking default
-
-I am the technical adjudicator for the 223 pHash candidate pairs. A pair is
-confirmed as the same examination only when full-resolution review shows the
-same projection/anatomy and matching distinctive local structures, with
-differences attributable only to encoding, resize, or contrast. pHash alone
-never confirms identity and never changes a class label. Cross-class pairs are
-not relabeled without independent source or clinical evidence. If manual review
-is unfinished when modeling must begin, both images are retained and the
-candidate edge is converted into a split-only grouping constraint so that the
-pair cannot cross training and evaluation roles.
+This plan prevents exact-content leakage, reduces leakage from plausibly related
+images, and keeps fitted preprocessing isolated from evaluation data while
+preserving uncertainty about true patient identity.
