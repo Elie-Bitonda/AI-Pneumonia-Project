@@ -54,8 +54,7 @@ dimensions, so image X has no common fixed P before standardization. Planned
 224 x 224 grayscale input contains **50,176 intensity values**; three-channel
 input contains **150,528 channel values**. Replicated grayscale channels are
 not independent features. The exact ordered metadata schema and semantic
-types are in `data/processed/phase1_variable_inventory.csv` and
-`phase1_strategy/rubric_analysis_notes.md`.
+types are in `data/processed/phase1_variable_inventory.csv`.
 
 ```text
 project_root/
@@ -80,13 +79,13 @@ project_root/
 │   ├── statistical_audit.py
 │   ├── image_review.py
 │   ├── final_phase1_audit.py
-│   └── rubric_gap_audit.py
+│   └── preprocessing_summary.py
 ├── figures/
 └── tests/
     ├── test_audit.py
     ├── test_integrity_verification.py
     ├── test_final_phase1.py
-    └── test_rubric_gaps.py
+    └── test_preprocessing_summary.py
 ```
 
 The Phase 1 report is being finalized for publication at the required path
@@ -106,7 +105,7 @@ complete unit-test suite; the current run passes all 19 tests.
 
 The final submission PDF must be available at
 [`phase1_strategy/Phase1_Strategy_Report.pdf`](phase1_strategy/Phase1_Strategy_Report.pdf).
-This README link is the canonical navigation point used for grading.
+This README link is the canonical navigation point for the Phase 1 report.
 
 ## Environment and exact reproduction commands
 
@@ -296,7 +295,6 @@ New outputs in `data/processed/`:
   `(sha256_hash, metric)`. Thresholds are retained to explain the original
   2,188 paths, not refitted. There are **1,091 unique flagged contents**.
   Top 30 ordering is flag count descending, then SHA-256 ascending for ties.
-- `local_documentation_inventory.json`: local evidence search scope/results.
 - `integrity_verification_summary.json`: counts and unresolved final N.
 
 Future modeling discovery must reject every path under `__MACOSX` and every
@@ -359,40 +357,39 @@ The statistics support the Phase 1 strategy report, not finalizing the cohort.
 Manual candidate/quality review, patient uncertainty, and acquisition-bias risks
 remain explicit. No raw bytes changed.
 
-## Final rubric gap closure
+## Metadata preprocessing summary
 
-Reproduce only the additional metadata inventory, missingness, canonical IQR
-fences and diagnostic VIF from the existing manifests:
+The metadata inventory, missingness summary, canonical IQR review bounds, and
+diagnostic VIF table can be reproduced from the committed manifests with:
 
 ```powershell
-.\.venv\Scripts\python.exe -m src.rubric_gap_audit
-.\.venv\Scripts\python.exe -m unittest discover -s tests -p test_rubric_gaps.py -v
+.\.venv\Scripts\python.exe -m src.preprocessing_summary --output-dir data/processed
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p test_preprocessing_summary.py -v
 ```
 
-This utility reads the two metadata CSVs, writes four new rubric CSV reports,
-and never opens raw images. The new canonical-only IQR fences flag 1,070
-contents; the historical 1,091 contents used the earlier path-weighted fences.
-Both are review indicators and neither automatically excludes images.
+This utility reads the existing audit tables and writes
+`phase1_variable_inventory.csv`, `phase1_missingness_summary.csv`,
+`outlier_bounds_and_skewness.csv`, and `metadata_vif.csv`. It does not
+modify raw images or fit a predictive model.
 
-The authoritative partition plan is now **80% outer development / 20% outer
-evaluation**, reserving 10% of development for internal validation:
-approximately **72% actual training / 8% internal validation / 20% evaluation**.
-Integer counts vary slightly. All data-derived normalization, class/sampling
-weights and learned transformations use only the actual 72% training subset;
-augmentation is training-only. Early stopping and tuning use internal
-validation only. Outer evaluation is used only after fold choices are locked.
-No memberships or final fold files have been created.
+The canonical IQR review fences flag 1,070 unique contents. The earlier
+path-weighted audit identified 1,091 contents using different thresholds; the
+two counts are retained only to distinguish the two audit populations. Neither
+set is an automatic exclusion list.
 
-Evidence and decisions:
+The planned partition strategy uses approximately 72% training, 8% internal
+validation, and 20% outer evaluation within a five-fold group-aware design.
+All data-derived normalization, class/sampling weights, learned
+transformations, and augmentation are restricted to the active training data.
+Internal validation is used for model and preprocessing selection; outer
+evaluation remains isolated until the configuration is locked.
+
+Supporting strategy documents:
 
 - [Missingness assessment](phase1_strategy/missingness_assessment.md)
-- [Metadata dimensions, outlier bounds and VIF](phase1_strategy/rubric_analysis_notes.md)
-- [Nominal target encoding](phase1_strategy/encoding_strategy.md)
-- [Exact split and leakage plan](phase1_strategy/split_and_leakage_plan.md)
-- [Rubric evidence coverage](phase1_strategy/rubric_completion_check.md)
+- [Target encoding strategy](phase1_strategy/encoding_strategy.md)
+- [Preprocessing decisions](phase1_strategy/preprocessing_decisions.md)
+- [Split and leakage plan](phase1_strategy/split_and_leakage_plan.md)
 
-The earlier Windows Application Control issue prevented SciPy-dependent tests
-from loading locally, so I moved the reproducibility check to a clean GitHub
-Actions Linux environment. The current CI workflow installs the pinned
-dependencies and passes the complete 19-test suite, including the integrity,
-pHash/BK-tree, missingness, VIF, and raw-byte-preservation unit tests.
+The clean CI workflow installs the pinned environment, runs the unit tests, and
+recomputes the preprocessing summary tables on Linux.
