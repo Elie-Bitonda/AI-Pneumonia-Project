@@ -161,3 +161,36 @@ as a final modeling cohort: near-duplicate adjudication, full-resolution quality
 review, uncertain patient identity, label provenance, and shortcut-risk
 mitigation remain unresolved. Preserve provisional N=5,824 and leave final N
 unresolved. The requested PDF remains a placeholder for the later writing step.
+
+
+## 10. Rank-based VIF sensitivity and deterministic metadata drop rule
+
+The original VIF calculation is Pearson/OLS based and therefore understates
+monotonic redundancy for the heavy-tailed file-size variable relative to the
+Spearman screen. As a sensitivity check I computed VIF on average ranks. The
+rank-VIF values are width 57.45, height 114.41, aspect ratio 21.10, file size
+9.70, mean intensity 1.02, and intensity SD 1.44.
+
+For the Phase 2 metadata-only branch the removal rule is deterministic:
+(1) remove a structurally derived feature before its source measurements when
+it is collinear, so aspect ratio is removed first; (2) recompute rank-VIF;
+(3) while any VIF exceeds 10, remove the variable with the largest VIF; and
+(4) for a numerical tie within 0.01 VIF units, remove the variable with weaker
+target MI, then alphabetical order if still tied. After removing aspect ratio,
+height remains highest at 12.10 and is removed. The retained set
+(width, file size, mean intensity, intensity SD) then has rank-VIFs 6.19, 6.03,
+1.01, and 1.38 respectively.
+
+This rule applies only to the tabular shortcut baseline and assignment
+diagnostics. It never deletes pixels or spatial dimensions from the CNN.
+
+## 11. Z-score sensitivity for near-Gaussian intensity summaries
+
+Although IQR remains the primary class-blind review rule, I explicitly applied
+the assignment's `|Z| > 3` sensitivity rule to the two centrally
+near-Gaussian diagnostics. Mean intensity flags 22/5,824 images (0.38%):
+9 below -3 and 13 above +3. Intensity SD flags 21/5,824 (0.36%):
+18 below -3 and 3 above +3. No Normal images are flagged by either Z-score
+screen; mean intensity flags 15 bacterial and 7 viral images, while intensity
+SD flags 15 bacterial and 6 viral images. These remain review flags rather than
+automatic deletion criteria.
