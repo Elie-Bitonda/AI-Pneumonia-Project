@@ -236,8 +236,10 @@ jobs:
               return max(0.0, float((H-k+1)/(N-k)))
 
           def cramers_v(sample):
-              tab = pd.crosstab(sample.image_mode, sample.target_label).reindex(
-                  columns=LABELS, fill_value=0)
+              tab = pd.crosstab(
+                  np.asarray(sample.image_mode),
+                  np.asarray(sample.target_label)
+              ).reindex(columns=LABELS, fill_value=0)
               chi2 = stats.chi2_contingency(tab, correction=False).statistic
               r,c = tab.shape
               return float(np.sqrt(chi2/(tab.to_numpy().sum()*min(r-1,c-1))))
@@ -249,7 +251,7 @@ jobs:
           for b in range(B):
               draw = rng.choice(gids, size=len(gids), replace=True)
               idx = np.concatenate([groups[g] for g in draw])
-              sample = frame.loc[idx]
+              sample = frame.loc[idx].reset_index(drop=True)
               for metric in METRICS:
                   boot[metric].append(eta_h(sample, metric))
               boot["image_mode"].append(cramers_v(sample))
