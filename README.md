@@ -89,11 +89,10 @@ project_root/
     └── test_rubric_gaps.py
 ```
 
-The requested PDFs are deliberately zero-byte placeholders, not finished or
-viewable reports. The notebook contains only a placeholder Markdown cell.
-The source folder and archive are additional existing local inputs, ignored
-by Git along with raw images, virtual environments, and caches. Nothing in
-this task commits data or initializes a repository.
+The Phase 1 report is being finalized for publication at the required path
+`phase1_strategy/Phase1_Strategy_Report.pdf`; the Phase 2 report and notebook
+remain future deliverables. The source folder and archive are local inputs,
+ignored by Git along with raw images, virtual environments, and caches.
 
 Repository status updated 2026-10-14: the project is version-controlled and
 published at https://github.com/Elie-Bitonda/AI-Pneumonia-Project. The required
@@ -102,6 +101,12 @@ artifacts, figures, and strategy directory are tracked. Raw X-rays, the archive,
 virtual environments, and caches remain excluded. A GitHub Actions workflow
 installs the pinned Phase 1 environment in a clean Linux runner and executes the
 complete unit-test suite; the current run passes all 19 tests.
+
+## Phase 1 report
+
+The final submission PDF must be available at
+[`phase1_strategy/Phase1_Strategy_Report.pdf`](phase1_strategy/Phase1_Strategy_Report.pdf).
+This README link is the canonical navigation point used for grading.
 
 ## Environment and exact reproduction commands
 
@@ -350,9 +355,9 @@ The interpretation and planned decisions are in:
 - The “Statistical Bias and Preprocessing Verification” section of
   `phase1_strategy/audit_findings.md`.
 
-The statistics support writing the strategy report, not finalizing the cohort.
+The statistics support the Phase 1 strategy report, not finalizing the cohort.
 Manual candidate/quality review, patient uncertainty, and acquisition-bias risks
-remain explicit. No raw bytes changed; the final report PDF remains a placeholder.
+remain explicit. No raw bytes changed.
 
 ## Final rubric gap closure
 
