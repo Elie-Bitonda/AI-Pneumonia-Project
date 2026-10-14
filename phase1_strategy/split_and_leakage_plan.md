@@ -26,7 +26,7 @@ available.
 The custom CNN, ResNet-18, and EfficientNet-B0 will not be compared on outer
 folds and then ranked using those same evaluation scores. Within each outer
 80% development set, architecture, preprocessing ablations, and
-hyperparameters are selected using inner three-fold stratified group-aware
+hyperparameters are selected using inner two-fold stratified group-aware
 validation. The selected configuration is then refit on the outer development
 data, with approximately 10% of that development portion reserved group-aware
 for early stopping.
@@ -83,10 +83,14 @@ confusion matrices.
 
 ## Before creating folds
 
-Adjudicate near-duplicate candidates and quality-review cases; record any
-evidence-based exclusions; freeze the canonical membership by SHA-256; and
-merge only manually confirmed related-image connections into the conservative
-group graph. pHash similarity alone never establishes identity.
+I begin from the 3,117 filename-derived leakage-control groups. For every
+pHash candidate edge: confirmed relations are merged into the group graph,
+rejected edges are omitted, and unresolved edges are retained only as
+conservative split constraints so their endpoints cannot cross training and
+evaluation roles. Connected components are formed before partitioning and
+group feasibility is rechecked. Therefore 3,117 is the filename-only base
+group count, not a promise of the final post-adjudication count. pHash
+similarity alone never establishes patient identity or changes a class label.
 
 
 ## Fixed Phase 2 search budget
@@ -104,9 +108,12 @@ runs for at most 20 epochs, and early stopping patience is 3 epochs.
    EfficientNet-B0.
 
 The fixed learning rates are 1e-3 for the custom CNN and 3e-4 for pretrained
-backbones, with weight decay 1e-4. This caps selection at seven candidate
-configurations per outer fold, each evaluated in two inner group-aware folds,
-followed by one final fit: at most 75 fits across the five outer folds. If
+backbones, with weight decay 1e-4. This defines the primary-search budget: seven candidate configurations per
+outer fold, each evaluated in two inner group-aware folds, followed by one
+final fit, for at most 75 CNN fits across the five outer folds. The locked
+grouped-versus-ungrouped sensitivity run, metadata-only baselines, and
+diagnostic probes are reported separately and are not counted in this
+primary-search budget. If
 compute must be reduced, the direct-resize diagnostic is removed first, then
 the optional contrast ablation; the three required architectures and grouped
 outer evaluation are not removed.
@@ -114,12 +121,26 @@ outer evaluation are not removed.
 ## Shortcut-gated preprocessing selection
 
 Preprocessing is not selected by macro-F1 alone. The three-class label entropy
-is 1.056 nats, while file size alone has MI 0.452 nats (42.8% of label entropy),
-so a strong nuisance baseline is expected. A representation is eligible for
-performance comparison only when the training-fold metadata/nuisance probe has
-macro-F1 below 0.60, or, where the source metadata cannot itself be altered,
-the image model exceeds that probe by at least 0.10 macro-F1 and border/marker
-occlusion changes macro-F1 by no more than 0.03. If no candidate satisfies the
+is 1.056 nats, while original file size alone has MI 0.452 nats (42.8% of
+label entropy), so the original-metadata baseline is retained as evidence that
+the source contains substantial nuisance signal. It is not used to claim that
+a particular resize operation removed that signal.
+
+For each transformed representation I will also fit a representation-specific
+nuisance probe inside inner validation using only non-anatomical summaries
+available after transformation, such as padding fraction, border-only
+intensity/edge summaries, and post-transform border geometry. Let F1_img be
+CNN macro-F1, F1_nuis the representation-specific nuisance-probe macro-F1, and
+Delta_occ the absolute macro-F1 change under the prespecified border/marker
+occlusion check. A representation is eligible only if:
+
+((F1_nuis < 0.60) OR (F1_img - F1_nuis >= 0.10)) AND (Delta_occ <= 0.03).
+
+The 0.60, 0.10 and 0.03 values are prespecified exploratory engineering
+criteria, not clinical guarantees. Probe fitting, occlusion-based selection,
+and any justified threshold revision occur only inside internal validation.
+Passing the gate does not establish clinical validity; it only prevents
+performance alone from deciding preprocessing. If no candidate satisfies the
 gate, Phase 2 reports shortcut-control failure rather than selecting the
 highest-scoring representation.
 
