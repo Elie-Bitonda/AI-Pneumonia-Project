@@ -54,3 +54,22 @@ difference will be reported as a leakage-sensitivity diagnostic.
 No fold files have been generated in Phase 1. Near-duplicate candidates remain
 review candidates; only a manually confirmed relation would be merged into the
 group structure before folds are frozen.
+
+
+## Subtype-namespace sensitivity and count reconciliation
+
+The per-class group counts are not additive because the same conservative
+`person<number>` relation group can contain both pneumonia subtypes. There are
+1,437 bacterial-class groups and 1,216 viral-class groups, with 979 shared
+cross-subtype tokens. Therefore the merged pneumonia total is
+`1,437 + 1,216 - 979 = 1,674` groups; adding the 1,443 Normal groups gives
+3,117 groups overall.
+
+Cross-subtype merging is a deliberately conservative leakage-control choice,
+not evidence that a shared numeric token proves one patient across subtypes.
+To expose this assumption, Phase 2 will also run a subtype-namespace sensitivity
+scheme in which bacterial and viral tokens are kept separate. That scheme has
+4,096 total groups, 722 multi-image groups, and largest group size 30, compared
+with 3,117 groups, 1,183 multi-image groups, and largest group size 31 under
+cross-subtype merging. The primary grouped estimate uses the conservative
+merged scheme; the subtype-only scheme is reported as a sensitivity analysis.
