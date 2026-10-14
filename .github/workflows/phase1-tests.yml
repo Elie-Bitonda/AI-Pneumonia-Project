@@ -146,3 +146,117 @@ jobs:
                                 "p":r[4],"p_holm_18":float(padj),
                                 "auc_a_gt_b":r[5],"rank_biserial":r[6]}))
           PY
+
+      - name: Strict regrade closure diagnostics
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, re
+          import numpy as np
+          import pandas as pd
+          from scipy import stats
+          from src.transformers import LABELS, METRICS
+
+          frame = pd.read_csv("data/processed/canonical_image_manifest.csv")
+          p_re = re.compile(r"^person([0-9]+)_(bacteria|virus)_", re.I)
+          n_re = re.compile(r"^(NORMAL2-)?IM-([0-9]+)-", re.I)
+
+          def group_key(row, merge_subtypes=True):
+              if row.target_label in ("BACTERIAL_PNEUMONIA","VIRAL_PNEUMONIA"):
+                  m = p_re.match(row.filename)
+                  if m:
+                      if merge_subtypes:
+                          return f"PNEUMONIA|person{int(m.group(1))}"
+                      return f"{row.target_label}|person{int(m.group(1))}"
+              elif row.target_label == "NORMAL":
+                  m = n_re.match(row.filename)
+                  if m:
+                      fam = "NORMAL2-IM" if m.group(1) else "IM"
+                      return f"NORMAL|{fam}|{int(m.group(2))}"
+              return f"UNIQUE|{row.sha256_hash}"
+
+          frame["group_merged"] = [group_key(r, True) for r in frame.itertuples()]
+          frame["group_subtype"] = [group_key(r, False) for r in frame.itertuples()]
+
+          print("=== GROUP_RECONCILIATION ===")
+          for col in ["group_merged","group_subtype"]:
+              sizes = frame.groupby(col).size()
+              print(json.dumps({"scheme": col, "groups": int(sizes.size),
+                                "multi_image_groups": int((sizes > 1).sum()),
+                                "largest_group": int(sizes.max())}))
+          overlap = frame[frame.target_label.ne("NORMAL")].groupby("group_merged").target_label.nunique()
+          print(json.dumps({"cross_subtype_merged_groups": int((overlap > 1).sum())}))
+          print("canonical_original_split_counts",
+                frame.original_split.value_counts().sort_index().to_dict())
+
+          print("=== ZSCORE_SENSITIVITY ===")
+          for metric in ["mean_intensity","std_intensity"]:
+              x = frame[metric].astype(float)
+              z = (x - x.mean()) / x.std(ddof=0)
+              mask = z.abs().gt(3)
+              print(json.dumps({"metric": metric, "overall": int(mask.sum()),
+                                "rate": float(mask.mean()),
+                                "below_minus3": int((z < -3).sum()),
+                                "above_plus3": int((z > 3).sum())}))
+              for label in LABELS:
+                  cm = frame.target_label.eq(label)
+                  print(json.dumps({"metric": metric, "class": label,
+                                    "count": int((mask & cm).sum()),
+                                    "n": int(cm.sum())}))
+
+          print("=== RANK_VIF ===")
+          ranked = frame[list(METRICS)].rank(method="average")
+          R = ranked.corr(method="pearson")
+          v = pd.Series(np.diag(np.linalg.inv(R.to_numpy())), index=R.index)
+          print(json.dumps({k: float(vv) for k,vv in v.items()}))
+          reduced = ranked.drop(columns=["aspect_ratio"])
+          R2 = reduced.corr()
+          v2 = pd.Series(np.diag(np.linalg.inv(R2.to_numpy())), index=R2.index)
+          print("after_drop_aspect", json.dumps({k: float(vv) for k,vv in v2.items()}))
+          reduced2 = reduced.drop(columns=["height"])
+          R3 = reduced2.corr()
+          v3 = pd.Series(np.diag(np.linalg.inv(R3.to_numpy())), index=R3.index)
+          print("after_drop_aspect_height", json.dumps({k: float(vv) for k,vv in v3.items()}))
+
+          print("=== GROUP_BOOTSTRAP_EFFECT_CI ===")
+          groups = {g: part.index.to_numpy()
+                    for g, part in frame.groupby("group_merged", sort=False)}
+          gids = np.array(list(groups), dtype=object)
+          rng = np.random.default_rng(42)
+          B = 1000
+          point = {}
+          boot = {m: [] for m in METRICS}
+          boot["image_mode"] = []
+
+          def eta_h(sample, metric):
+              arrays = [sample.loc[sample.target_label.eq(label), metric].to_numpy(float)
+                        for label in LABELS]
+              H = stats.kruskal(*arrays).statistic
+              N = len(sample); k = len(LABELS)
+              return max(0.0, float((H-k+1)/(N-k)))
+
+          def cramers_v(sample):
+              tab = pd.crosstab(sample.image_mode, sample.target_label).reindex(
+                  columns=LABELS, fill_value=0)
+              chi2 = stats.chi2_contingency(tab, correction=False).statistic
+              r,c = tab.shape
+              return float(np.sqrt(chi2/(tab.to_numpy().sum()*min(r-1,c-1))))
+
+          for metric in METRICS:
+              point[metric] = eta_h(frame, metric)
+          point["image_mode"] = cramers_v(frame)
+
+          for b in range(B):
+              draw = rng.choice(gids, size=len(gids), replace=True)
+              idx = np.concatenate([groups[g] for g in draw])
+              sample = frame.loc[idx]
+              for metric in METRICS:
+                  boot[metric].append(eta_h(sample, metric))
+              boot["image_mode"].append(cramers_v(sample))
+
+          for metric in [*METRICS, "image_mode"]:
+              lo, hi = np.quantile(boot[metric], [0.025,0.975])
+              print(json.dumps({"variable": metric, "point": point[metric],
+                                "bootstrap_groups": len(gids), "B": B,
+                                "ci95_low": float(lo), "ci95_high": float(hi)}))
+          PY
