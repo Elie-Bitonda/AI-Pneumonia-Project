@@ -141,9 +141,12 @@ with exact counts varying under group constraints.
 
 Before implementing folds, adjudicate the 223 pHash candidates (48 cross-class,
 27 cross-source). The pHash radius is a screening threshold, not an identity
-threshold; only manually confirmed relations are added to the grouping graph.
-Temporal splitting is not applicable because trustworthy acquisition timestamps
-are unavailable.
+threshold. Confirmed relations are merged, rejected edges are omitted, and
+unresolved edges are retained only as split constraints so their endpoints
+cannot cross training and evaluation roles. Thus the current 3,117 groups are
+the filename-only base grouping; the final component count can change before
+folds are frozen. Temporal splitting is not applicable because trustworthy
+acquisition timestamps are unavailable.
 
 ## 9. Leakage control and readiness
 
