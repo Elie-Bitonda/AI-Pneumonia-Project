@@ -87,3 +87,50 @@ Adjudicate near-duplicate candidates and quality-review cases; record any
 evidence-based exclusions; freeze the canonical membership by SHA-256; and
 merge only manually confirmed related-image connections into the conservative
 group graph. pHash similarity alone never establishes identity.
+
+
+## Fixed Phase 2 search budget
+
+To keep nested selection feasible, the search is staged rather than taking the
+Cartesian product of every architecture and preprocessing option. The split
+seed and model initialization seed are both 42, batch size is 32, each candidate
+runs for at most 20 epochs, and early stopping patience is 3 epochs.
+
+1. Using the custom CNN only, compare two geometry candidates: aspect-preserving
+   padding and the predeclared crop/resize alternative.
+2. On the selected geometry, compare contrast normalization off versus on using
+   the custom CNN.
+3. With geometry and contrast fixed, compare the custom CNN, ResNet-18, and
+   EfficientNet-B0.
+
+The fixed learning rates are 1e-3 for the custom CNN and 3e-4 for pretrained
+backbones, with weight decay 1e-4. This caps selection at seven candidate
+configurations per outer fold, each evaluated in two inner group-aware folds,
+followed by one final fit: at most 75 fits across the five outer folds. If
+compute must be reduced, the direct-resize diagnostic is removed first, then
+the optional contrast ablation; the three required architectures and grouped
+outer evaluation are not removed.
+
+## Shortcut-gated preprocessing selection
+
+Preprocessing is not selected by macro-F1 alone. The three-class label entropy
+is 1.056 nats, while file size alone has MI 0.452 nats (42.8% of label entropy),
+so a strong nuisance baseline is expected. A representation is eligible for
+performance comparison only when the training-fold metadata/nuisance probe has
+macro-F1 below 0.60, or, where the source metadata cannot itself be altered,
+the image model exceeds that probe by at least 0.10 macro-F1 and border/marker
+occlusion changes macro-F1 by no more than 0.03. If no candidate satisfies the
+gate, Phase 2 reports shortcut-control failure rather than selecting the
+highest-scoring representation.
+
+## Adjudication rule and non-blocking default
+
+I am the technical adjudicator for the 223 pHash candidate pairs. A pair is
+confirmed as the same examination only when full-resolution review shows the
+same projection/anatomy and matching distinctive local structures, with
+differences attributable only to encoding, resize, or contrast. pHash alone
+never confirms identity and never changes a class label. Cross-class pairs are
+not relabeled without independent source or clinical evidence. If manual review
+is unfinished when modeling must begin, both images are retained and the
+candidate edge is converted into a split-only grouping constraint so that the
+pair cannot cross training and evaluation roles.
