@@ -28,10 +28,17 @@ aspect ratios range approximately 0.835–3.379, and stretching would change
 visible proportions differently by image. Do not crop anatomy to fill a square.
 
 Important limitation: aspect ratio is associated with class (rank effect
-0.277), so padding geometry can retain that class cue. Padding is a geometric
-preservation choice, **not proof of shortcut removal**. Compare plausible
-alternatives only inside later training/inner-validation work, and review
-extreme framing manually. Do not choose transformations using held-out scores.
+0.277), so padding geometry can retain that class cue. Normal images are also
+substantially larger, so they undergo stronger downsampling and may retain
+class-correlated sharpness differences. Padding is a geometric preservation
+choice, **not proof of shortcut removal**. Phase 2 will therefore compare the
+padded representation against a carefully validated crop/resize alternative
+and a direct-resize sensitivity baseline, with all choices made inside inner
+group-aware validation. A training-fold-only metadata baseline will quantify
+how much target information is available from width, height, aspect ratio,
+file size, mean intensity and intensity SD before the CNN is considered.
+Grad-CAM plus border/marker occlusion will be used to check whether the model
+depends on padding, laterality markers, text, or peripheral non-lung regions.
 
 ## 3. Channel handling
 
@@ -66,11 +73,14 @@ aspect-preserving 224 canvas deliberately replaces that geometry to avoid
 cropping. Preserve the documented intensity normalization, and record this
 geometry departure for later training-only validation rather than claiming
 the whole pretrained inference preset is used unchanged.
-Fixed external pretrained
-constants are not estimated from this dataset. Any alternative dataset-derived
-mean/SD must be estimated only on each fold's training portion, including an
-explicit decision about padded pixels, and then frozen for its validation data.
-Do not combine incompatible baseline and pretrained scaling conventions.
+Fixed external pretrained constants are not estimated from this dataset.
+Intensity SD has a nontrivial class association (eta-squared-H about 0.170), so
+simple /255 scaling does not remove contrast as a possible shortcut. Phase 2
+will therefore include a visually validated per-image contrast-normalization
+ablation for the custom CNN. Any dataset-derived mean/SD must be estimated only
+on the active training portion, including an explicit decision about padded
+pixels, and then frozen for validation/evaluation. Do not combine incompatible
+baseline and pretrained scaling conventions.
 
 ## 5. Planned training-only augmentation
 
@@ -92,12 +102,15 @@ histogram equalization/CLAHE is justified by this audit.
 
 ## 6. Quality flags
 
-Retain all currently flagged images pending documented human review. Pooled
-IQR rules flag 54.27% of NORMAL but only 5.36% bacterial and 5.79% viral images,
-mostly because NORMAL images are larger and occupy more bytes. A statistical
-outlier is not an invalid medical image. Use flags to prioritize review and
-record evidence-based decisions; do not Winsorize pixels, impute image values,
-or discard images solely for exceeding metadata fences.
+Retain all currently flagged images pending documented human review. Using the
+final canonical-only IQR fences, 837/1,579 NORMAL images (53.01%), 147/2,760
+bacterial images (5.33%) and 86/1,485 viral images (5.79%) have at least one
+flag. Canonical file-size flags alone affect 813 NORMAL images (51.49%) but
+only two bacterial and one viral image. This demonstrates class-dependent
+flagging even after content deduplication. A statistical outlier is not an
+invalid medical image. I use pooled fences only as review prompts and do not
+introduce target-conditioned exclusion thresholds, Winsorize pixels, impute
+image values, or discard an image solely for exceeding a metadata fence.
 
 ## 7. Class imbalance
 
@@ -112,18 +125,25 @@ labels or apply SMOTE to raw pixels. No loss or weights were fitted here.
 
 ## 8. Split strategy
 
-Preserve **StratifiedKFold(n_splits=5, shuffle=True, random_state=42)** as the
-proposed strategy. Five folds meet the assignment, shuffling avoids directory
-order, and seed 42 makes allocation reproducible. Current class counts support
-five-way label stratification, but do not prove patient independence.
-Patient-level grouping cannot currently be justified from the available filename
-metadata. Patient-level leakage remains explicit. No final folds are created.
+Use **StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)** as the
+primary outer evaluation strategy with the conservative filename-derived
+relation groups documented in `patient_identity_assessment.md`. These are
+leakage-control units, not verified patient identities. The smallest class has
+1,485 images and 1,216 relation groups, so five folds remain feasible while
+keeping plausibly related images together.
 
-Before implementing folds, adjudicate 223 pHash candidates (48 cross-class,
-27 cross-source). Confirmed duplicate copies require a documented representative
-selection or a justified change to the split design, not arbitrary separation
-across folds. Do not merge candidates or invent patient groups automatically.
-If reliable patient identities become available, revisit grouped stratification.
+Architecture and hyperparameter selection will occur inside each outer
+development set using inner group-aware validation. Ordinary
+`StratifiedKFold(5)` will be retained only as a secondary leakage-sensitivity
+comparison; it is not the headline performance estimate. The approximate final
+fit remains 72% training / 8% early-stopping validation / 20% outer evaluation,
+with exact counts varying under group constraints.
+
+Before implementing folds, adjudicate the 223 pHash candidates (48 cross-class,
+27 cross-source). The pHash radius is a screening threshold, not an identity
+threshold; only manually confirmed relations are added to the grouping graph.
+Temporal splitting is not applicable because trustworthy acquisition timestamps
+are unavailable.
 
 ## 9. Leakage control and readiness
 
