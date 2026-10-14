@@ -1,3 +1,5 @@
+[![Phase 1 tests](https://github.com/Elie-Bitonda/AI-Pneumonia-Project/actions/workflows/phase1-tests.yml/badge.svg)](https://github.com/Elie-Bitonda/AI-Pneumonia-Project/actions/workflows/phase1-tests.yml)
+
 # Explainable Deep Learning for Multiclass Pediatric Pneumonia Classification from Chest X-Ray Images
 
 This research project investigates **Multi-Class Classification** of pediatric
