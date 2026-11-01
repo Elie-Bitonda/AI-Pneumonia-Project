@@ -1,0 +1,308 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage{balance}
+
+\graphicspath{{phase2_report_assets/}}
+\urlstyle{same}
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{5pt plus 2pt minus 2pt}
+\setlength{\intextsep}{5pt plus 2pt minus 2pt}
+\renewcommand{\arraystretch}{1.08}
+
+\title{Explainable Deep Learning for Multiclass Pediatric Pneumonia Classification from Chest X-Ray Images\\
+\large Phase 2: Pipeline Implementation and Diagnostic Validation}
+
+\author{
+\IEEEauthorblockN{Elie Bitonda Tuyizere}
+\IEEEauthorblockA{Carnegie Mellon University Africa\\
+04-652 Artificial Intelligence System Design\\
+\href{mailto:ebitonda@andrew.cmu.edu}{ebitonda@andrew.cmu.edu}\\
+\url{github.com/Elie-Bitonda/AI-Pneumonia-Project}}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In Phase 2, I implemented and audited the preprocessing strategy established in Phase 1 before any predictive model fitting. The canonical cohort contains 5,824 unique readable SHA-256 image contents: 1,579 Normal, 2,760 Bacterial Pneumonia, and 1,485 Viral Pneumonia images. Filename-derived relations produce 3,117 conservative base groups; retaining 223 unresolved perceptual-hash similarity edges as split-only constraints produces 2,926 leakage-control components. I created five group-aware outer partitions with approximately 72\% training, 8\% internal validation, and 20\% outer evaluation per fold. I implemented deterministic image preprocessing separately from a training-isolated metadata diagnostic pipeline built with Scikit-Learn \texttt{Pipeline} and \texttt{ColumnTransformer}. Six numeric diagnostic variables are reduced to four after rank-based VIF control; for Fold 1, the verified design matrix changes from $4{,}191\times6$ to $4{,}191\times4$ without losing rows. Fold-1 file-size skewness changes from 2.633768 to 0.469678 under the diagnostic \texttt{log1p} comparison. PCA on the retained standardized space requires three components to exceed 90\% cumulative variance and four to exceed 95\%. All eight required diagnostic figures were saved at 300 DPI, the executed notebook completed 16/16 code cells without error, and 30 Phase 2 unit tests passed.
+\end{abstract}
+
+\section{Phase 2 Scope and Research Targets}
+
+I use three research labels: \texttt{NORMAL}=0, \texttt{BACTERIAL\_PNEUMONIA}=1, and \texttt{VIRAL\_PNEUMONIA}=2. The labels follow the local dataset annotations derived from the pediatric chest-radiograph study of Kermany \emph{et al.}~\cite{kermany2018}. I treat them as research targets rather than as microbiological confirmation or clinical diagnosis.
+
+My Phase 2 objective is to turn the Phase 1 design into executable, leakage-controlled preprocessing and to verify every important choice empirically. I therefore restrict this report to canonical membership, grouping, partitioning, image preprocessing, training-only metadata diagnostics, transformations, PCA, reproducibility, and the strategy-versus-reality audit. The public implementation is available at \url{https://github.com/Elie-Bitonda/AI-Pneumonia-Project}.
+
+\section{Canonical Cohort and Leakage-Control Graph}
+
+The canonical manifest contains 5,824 unique readable SHA-256 contents: 1,579 Normal (27.11\%), 2,760 Bacterial Pneumonia (47.39\%), and 1,485 Viral Pneumonia (25.50\%). Alternative copied paths are retained only as provenance and do not create extra observations. Figure~\ref{fig:target} shows the resulting target balance.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.96\columnwidth]{fig1_2_target_distribution.png}
+\caption{Canonical target distribution ($N=5{,}824$). Counts refer to unique readable byte contents, not verified independent patients.}
+\label{fig:target}
+\end{figure}
+
+I derive conservative relation groups from filename structure instead of assuming that each file is an independent patient. Pneumonia filenames sharing the same \texttt{person<number>} token are grouped across subtype labels. Normal filenames are grouped by their leading numeric token while keeping the \texttt{IM} and \texttt{NORMAL2-IM} families separate. This produces 3,117 base groups.
+
+I also retain all 223 unresolved pHash similarity edges as split-only constraints. Those edges connect 262 unique image contents, touch 66 final components, merge 191 base groups, and yield 2,926 final leakage-control components. The largest component contains 140 images, and 966 components contain more than one class. I interpret those mixed components only as conservative split constraints; I do not claim that they are confirmed patient identities or duplicate images. An independent sparse-graph reconstruction reproduced the saved component partition exactly.
+
+\section{Group-Aware Partitioning and Class Balance}
+
+I create five outer folds with Scikit-Learn's \texttt{StratifiedGroupKFold} using five splits, shuffling, and random seed 42~\cite{pedregosa2011}. I use the final leakage-control component as the grouping variable. Inside each outer development set, I create a second group-aware ten-fold split using seed $42+\text{outer fold}$ and reserve the first deterministic split for internal validation. I do not search seeds for favorable class balance and I never break a leakage-control component.
+
+\begin{table}[!t]
+\caption{Actual Phase 2 role counts. Every canonical image appears in outer evaluation exactly once.}
+\label{tab:foldcounts}
+\centering
+\small
+\begin{tabular}{rrrr}
+\toprule
+Fold & Train & Val. & Outer Eval.\\
+\midrule
+1 & 4,191 & 468 & 1,165\\
+2 & 4,192 & 466 & 1,166\\
+3 & 4,195 & 466 & 1,163\\
+4 & 4,192 & 466 & 1,166\\
+5 & 4,194 & 466 & 1,164\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:foldcounts} shows that the realized allocation remains close to the planned 72/8/20 design while respecting group integrity. Class proportions are also stable across roles. For Fold 1, the training set contains 1,136 Normal, 1,986 Bacterial, and 1,069 Viral images. I compute training-only class weights with
+\begin{equation}
+w_c=\frac{N_{\mathrm{train}}}{3n_c},
+\end{equation}
+which gives 1.2298, 0.7034, and 1.3068 for Normal, Bacterial, and Viral, respectively. These weights are recalculated independently inside each fold so that validation and outer-evaluation labels do not influence fitted training state. This will support later model fitting without changing the Phase 2 data partitions.
+
+\section{Implemented Image Preprocessing}
+
+The image branch loads only canonical paths and verifies each source file against its manifest SHA-256 before preprocessing. The canonical channel audit contains 5,541 grayscale \texttt{L} images and 283 RGB images; all accepted RGB images have identical R, G, and B channels, so using their common intensity does not discard color information.
+
+For source width $w$ and height $h$, I use the aspect-preserving scale
+\begin{equation}
+s=\min(224/w,224/h),
+\end{equation}
+and resized dimensions
+\begin{equation}
+(w',h')=(\max(1,\mathrm{round}(sw)),\max(1,\mathrm{round}(sh))).
+\end{equation}
+I resize with bilinear interpolation, place the result on a black $224\times224$ canvas, split any odd padding difference deterministically, and convert intensity to float32 in $[0,1]$. If later pretrained weights require three channels, I replicate the same intensity plane and apply published normalization constants explicitly rather than introducing a hidden second crop or resize.
+
+I restrict augmentation to the training role: rotation is bounded to $\pm5^{\circ}$ and translation to at most 2\% of image size, with explicit sample/epoch seeds. Validation and evaluation reject augmentation requests. I do not use vertical flips, aggressive crops, pixel Winsorization, or transformed-image writes. These restrictions preserve anatomy and keep evaluation deterministic.
+
+\section{Leakage-Free Metadata Diagnostic Pipeline}
+
+I keep image preprocessing separate from metadata diagnostics. The diagnostic branch uses an explicit numeric allowlist inside a \texttt{ColumnTransformer}, followed by a \texttt{StandardScaler} and a custom rank-VIF reducer inside a Scikit-Learn \texttt{Pipeline}. The six candidates are width, height, aspect ratio, file size, mean intensity, and intensity standard deviation. I exclude target labels, file paths, filenames, hashes, source split, group identifiers, parsing/status fields, alternative-path provenance, and other identifier-like columns. Metadata are diagnostic variables only and are not supplied as CNN predictors.
+
+\subsection{Pipeline Output Verification}
+
+For Fold 1, the actual-training matrix begins as
+\begin{equation}
+X_{\mathrm{train}}^{(0)}\in\mathbb{R}^{4191\times6}.
+\end{equation}
+I remove \texttt{aspect\_ratio} first when structural redundancy is present, then iteratively remove the remaining variable with rank-VIF above 10; MI is used only as the documented tie-break rule. In Fold 1, \texttt{height} is the next removal. The retained matrix is
+\begin{equation}
+X_{\mathrm{train}}^{(f)}\in\mathbb{R}^{4191\times4},
+\end{equation}
+therefore
+\begin{equation}
+\boxed{4191\times6\rightarrow4191\times4}.
+\end{equation}
+All 4,191 training rows are retained. The fitted four-column schema is then applied without refitting to Fold-1 validation ($468\times4$) and outer evaluation ($1{,}165\times4$). The same fit-on-training rule is repeated independently in every fold.
+
+\section{Missingness and Outlier Evidence}
+
+The six selected diagnostic predictors contain zero missing cells in the canonical cohort. Figure~\ref{fig:missing} separates observed measurements from unavailable identity tokens and structural blanks in error fields. Because the selected predictor block has no missing values, an MCAR hypothesis test or missingness-association statistic would not inform an imputation decision. I therefore use no predictor imputer and leave nonpredictor structural blanks unchanged.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.97\columnwidth]{fig1_1_missingness_heatmap.png}
+\caption{Canonical missingness diagnostic. The six selected numeric predictors are complete; unavailable identity tokens and structural error-field blanks remain nonpredictors.}
+\label{fig:missing}
+\end{figure}
+
+For outlier analysis, I fit class-blind Tukey fences $Q_1-1.5\,IQR$ and $Q_3+1.5\,IQR$ on each active training subset. In Fold 1, 729 of 4,191 training images (17.39\%) have at least one metadata IQR flag. File size contributes the largest single-variable count: 550 images (13.12\%) outside the Fold-1 fences of $-227{,}968.75$ and $529{,}033.25$ bytes. Its raw skewness is 2.633768. Figure~\ref{fig:outlier} shows the raw values beside a diagnostic capped comparison.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.97\columnwidth]{fig2_1_outlier_boxplots.png}
+\caption{Fold-1 metadata before and after diagnostic IQR capping. I use capping only to study sensitivity; the retained Phase 2 pipeline remains uncapped and preserves every radiograph.}
+\label{fig:outlier}
+\end{figure}
+
+I do not delete an image only because its metadata are statistically extreme, and I do not cap CNN pixels. This is preferable to automatic row deletion because unusual acquisition geometry or file size does not by itself establish that a radiograph is invalid.
+
+\section{Correlation, Collinearity, and Target Association}
+
+I use Spearman correlation because several metadata distributions are skewed and the purpose is to detect monotonic redundancy rather than assume normality. Fold-1 correlations include width-height $\rho=0.930724$, height-file-size $\rho=0.937291$, and width-file-size $\rho=0.912075$ (Figs.~\ref{fig:corr} and~\ref{fig:scatter}).
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.92\columnwidth]{fig3_1_correlation_matrix.png}
+\caption{Fold-1 actual-training upper-triangle Spearman correlation matrix.}
+\label{fig:corr}
+\end{figure}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.84\textwidth]{fig3_2_collinear_scatterplots.png}
+\caption{Fold-1 training-only scatterplots for the strongest resolution/storage relationships. I use them to inspect redundancy and acquisition structure, not to infer disease mechanisms.}
+\label{fig:scatter}
+\end{figure*}
+
+Rank-based VIF is recomputed after each removal. In Fold 1, height initially has rank-VIF 121.224 and aspect ratio 22.335. After removing aspect ratio and height, the retained variables are width, file size, mean intensity, and intensity standard deviation; the maximum final rank-VIF falls to 6.145611 (Table~\ref{tab:vif}).
+
+\begin{table}[!t]
+\caption{Fold-1 rank-VIF before and after reduction.}
+\label{tab:vif}
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Variable & Initial & Final\\
+\midrule
+Width & 60.747 & 6.146\\
+Height & 121.224 & Removed\\
+Aspect ratio & 22.335 & Removed\\
+File size & 9.487 & 5.987\\
+Mean intensity & 1.032 & 1.014\\
+Intensity SD & 1.439 & 1.380\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+I also calculate training-only mutual information independently in each outer-fold training subset. The across-fold mean MI is highest for file size (0.4492 nats), followed by height (0.2675), width (0.2356), aspect ratio (0.1578), intensity SD (0.1318), and mean intensity (0.0251). Every fold-specific permutation test has $p=0.002$. Figure~\ref{fig:mi} shows the mean and sample SD across the five overlapping training subsets; I treat the SD as descriptive variability, not as a confidence interval. The associations indicate possible acquisition shortcuts, not causal or clinical effects.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.93\columnwidth]{fig3_3_target_importance.png}
+\caption{Training-only metadata-target mutual information across five outer-fold training subsets. Error bars are descriptive sample SDs, not confidence intervals.}
+\label{fig:mi}
+\end{figure}
+
+\section{Transformation and Scaling Analysis}
+
+I compare raw file size with three independent alternatives fitted on Fold-1 training data: \texttt{log1p(raw)}, MinMax(raw), and StandardScaler(raw). The raw file-size mean is 212,671.96 bytes with population SD 266,373.81 bytes. Raw skewness is 2.633768; \texttt{log1p} reduces it to 0.469678, while affine MinMax scaling and standardization leave the skewness unchanged at 2.633768. StandardScaler produces mean approximately 0 and population SD 1, as expected.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.98\columnwidth]{fig4_1_transformation_grid.png}
+\caption{Fold-1 file-size transformation comparison. The panels are parallel alternatives fitted to raw training data; they are not a sequential transformation chain.}
+\label{fig:transform}
+\end{figure}
+
+I do not retain \texttt{log1p} merely because it produces a more symmetric histogram. Reduced skewness is descriptive evidence, not proof of later predictive benefit. Likewise, diagnostic IQR capping is not retained. The implemented metadata pipeline keeps StandardScaler because scale normalization is part of the fitted diagnostic representation, while log transform and capping remain evidence-only comparisons.
+
+\section{PCA Dimensionality Diagnostic}
+
+I evaluate PCA in two training-only spaces: the six-candidate standardized space before collinearity reduction and the four-variable retained pipeline output. In Fold 1, the six-variable space requires four components to exceed both 90\% and 95\% cumulative variance. In the retained space, PC1--PC4 explain 51.6843\%, 24.3938\%, 17.9375\%, and 5.9845\%; cumulative variance reaches 94.0155\% after PC3 and 100\% after PC4. The same 3-component/4-component 90\%/95\% pattern appears in all five retained-space folds.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.94\columnwidth]{fig5_1_pca_scree_plot.png}
+\caption{Fold-1 PCA scree and cumulative-variance plot for the four retained standardized metadata diagnostics.}
+\label{fig:pca}
+\end{figure}
+
+I use the retained-space PCA for the required figure because it describes the actual Phase 2 pipeline output. I do not add PCA as a retained preprocessing stage: the diagnostic space already contains only four interpretable variables, and PCA would replace them with less interpretable combinations without a demonstrated Phase 2 need.
+
+\section{Leakage, Reproducibility, and Repository Verification}
+
+I verify the implementation with explicit programmatic assertions. SHA-256 contents, base relation groups, final leakage-control components, and every unresolved pHash edge remain within a single role in each fold. Every canonical content appears in outer evaluation exactly once. Replacing the original source-split field leaves the generated partitions unchanged, confirming that the source split is not used. The target is excluded from the predictor allowlist, scaler fit counts match the active training-row count, and raw-data fingerprints are unchanged before and after execution.
+
+I also check preservation of the earlier evidence: 89 protected Phase 1 repository files match their committed contents after newline normalization where needed, the dependency pins are preserved, and the original correlation figure is backed up before the Phase 2 figure reuses the required filename. The Phase 2 runtime is Python 3.12.14 rather than the Phase 1 recorded Python 3.14.7; I document this deviation instead of claiming interpreter equivalence. The executed notebook completed 16/16 code cells in 33.172 seconds without errors, and the three Phase 2 test modules produced 30 passing tests and 0 failures. All eight required diagnostics are saved in \texttt{figures/} at approximately 300 DPI.
+
+The repository separates reusable logic in \texttt{src/}, tests in \texttt{tests/}, the executed notebook under \texttt{phase2\_implementation}, derived evidence in \texttt{data/processed/}, and publication-quality diagnostics in \texttt{figures/}. I keep course-specific submission details in this PDF, while the public README introduces the project through its research problem, evidence, workflow, and reproducibility.
+
+\section{Strategy-versus-Reality Audit}
+
+Tables~\ref{tab:auditA} and~\ref{tab:auditB} summarize the main Phase 1 choices, the Phase 2 evidence that tested them, and the final implemented decision. I treat ``confirmed'' as a plan that worked as intended, ``operationalized'' as a plan converted into tested code, and ``refined'' as a change made because the empirical evidence required a more precise implementation.
+
+\begin{table}[!t]
+\caption{Strategy-versus-reality audit, Part A.}
+\label{tab:auditA}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\begin{tabularx}{\columnwidth}{@{}p{0.24\columnwidth}X@{}}
+\toprule
+Phase 1 plan & Phase 2 reality, decision, and rationale\\
+\midrule
+Canonical membership & \textbf{Evidence:} 5,824 unique readable SHA-256 contents. \textbf{Decision:} preserve all canonical contents. \textbf{Why:} no new adjudicated evidence justified an exclusion.\\
+\addlinespace
+Filename grouping & \textbf{Evidence:} 3,117 base relation groups. \textbf{Decision:} keep the documented filename relation policy. \textbf{Why:} it reduces known relation leakage without claiming verified patient identity.\\
+\addlinespace
+pHash review & \textbf{Evidence:} 223 unresolved edges yield 2,926 final components. \textbf{Decision:} keep all unresolved edges as split-only constraints. \textbf{Why:} this is safer than silently dropping uncertain similarity links.\\
+\addlinespace
+Group-aware folds & \textbf{Evidence:} every component stays in one role and every image is outer evaluation exactly once. \textbf{Decision:} deterministic outer seed 42 plus group-aware inner validation. \textbf{Why:} prevents relation leakage and avoids favorable-seed searching.\\
+\addlinespace
+Class weighting & \textbf{Evidence:} Fold-1 weights 1.2298/0.7034/1.3068. \textbf{Decision:} recompute from each active training subset. \textbf{Why:} validation/evaluation labels never influence fitted training state.\\
+\addlinespace
+Image geometry & \textbf{Evidence:} deterministic L/RGB checks; accepted RGB channels are identical. \textbf{Decision:} bilinear resize, symmetric padding, float32 $[0,1]$. \textbf{Why:} preserves source geometry while standardizing size.\\
+\addlinespace
+Augmentation & \textbf{Evidence:} bounded seeded rotation/translation tests pass. \textbf{Decision:} $\pm5^{\circ}$ rotation and $\leq2\%$ translation, training only. \textbf{Why:} avoids implausible transformations and keeps evaluation deterministic.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[!t]
+\caption{Strategy-versus-reality audit, Part B.}
+\label{tab:auditB}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\begin{tabularx}{\columnwidth}{@{}p{0.24\columnwidth}X@{}}
+\toprule
+Phase 1 plan & Phase 2 reality, decision, and rationale\\
+\midrule
+Missingness & \textbf{Evidence:} six selected predictors have 0 missing cells (Fig.~\ref{fig:missing}). \textbf{Decision:} no predictor imputer. \textbf{Why:} imputation would alter complete measurements without an evidence-based need.\\
+\addlinespace
+Outlier review & \textbf{Evidence:} 729/4,191 Fold-1 rows flagged; diagnostic capping changes tails (Fig.~\ref{fig:outlier}). \textbf{Decision:} keep the uncapped data. \textbf{Why:} statistical extremeness alone does not prove an invalid radiograph.\\
+\addlinespace
+Redundancy control & \textbf{Evidence:} strong Spearman associations; height VIF 121.224, aspect ratio 22.335 (Figs.~\ref{fig:corr}--\ref{fig:scatter}). \textbf{Decision:} remove aspect ratio then height. \textbf{Why:} reduces redundancy while keeping every image and four interpretable diagnostics.\\
+\addlinespace
+Transformations & \textbf{Evidence:} file-size skew 2.6338 $\rightarrow$ 0.4697 with \texttt{log1p} (Fig.~\ref{fig:transform}). \textbf{Decision:} keep log/capping as diagnostics and retain training-fitted scaling. \textbf{Why:} better shape alone does not establish predictive benefit.\\
+\addlinespace
+PCA & \textbf{Evidence:} six-variable PCA needs 4/4 components for 90/95\%; retained space needs 3/4 (Fig.~\ref{fig:pca}). \textbf{Decision:} report retained-space PCA but do not retain PCA. \textbf{Why:} it matches pipeline output and preserves interpretability.\\
+\addlinespace
+Target association & \textbf{Evidence:} five training-only MI estimates per variable (Fig.~\ref{fig:mi}). \textbf{Decision:} report across-fold mean/SD. \textbf{Why:} shows stability without full-cohort fitting or false confidence intervals.\\
+\addlinespace
+Runtime & \textbf{Evidence:} Python 3.12.14, notebook 16/16, 30/30 tests. \textbf{Decision:} record actual runtime and preservation checks. \textbf{Why:} makes the Phase 1--Phase 2 runtime deviation explicit and auditable.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Limitations and Phase 2 Implications}
+
+Patient identity remains unverified. Filename relations can over-group or under-group examinations, and pHash edges are similarity constraints rather than confirmed identities. Group isolation prevents known relation constraints from crossing roles but cannot prove patient-independent evaluation. Geometry and storage characteristics remain possible shortcut signals: padding preserves proportions but can also preserve aspect-ratio information, and common grayscale handling does not guarantee that all acquisition traces are removed. The dataset represents one source population, so Phase 2 does not establish external clinical generalization.
+
+The Phase 2 outputs define the conditions that later model development should respect. Model fitting should reuse the locked group-aware roles, compute class-dependent training choices from training data only, and avoid using the diagnostic metadata as direct CNN predictors unless a new hypothesis is explicitly tested. Because the class distribution is imbalanced, later evaluation should not depend on overall accuracy alone; macro-F1 and balanced accuracy will give each class comparable influence, while per-class precision, recall, and the confusion matrix will show which errors dominate. In a Normal-versus-Pneumonia interpretation, pneumonia recall deserves particular attention because missed pneumonia cases would be more concerning than additional cases sent for review. For Bacterial-versus-Viral discrimination, both precision and recall should be examined because a confident but incorrect subtype prediction can also be misleading. These are later evaluation implications of the Phase 2 class and leakage audit, not predictive results claimed in this report.
+
+\balance
+\begin{thebibliography}{00}
+
+\bibitem{kermany2018}
+D. S. Kermany \emph{et al.}, ``Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning,'' \emph{Cell}, vol. 172, no. 5, pp. 1122--1131.e9, 2018, doi: 10.1016/j.cell.2018.02.010.
+
+\bibitem{pedregosa2011}
+F. Pedregosa \emph{et al.}, ``Scikit-learn: Machine Learning in Python,'' \emph{Journal of Machine Learning Research}, vol. 12, pp. 2825--2830, 2011.
+
+\bibitem{obrien2007}
+R. M. O'Brien, ``A Caution Regarding Rules of Thumb for Variance Inflation Factors,'' \emph{Quality \& Quantity}, vol. 41, pp. 673--690, 2007.
+
+\bibitem{jolliffe2016}
+I. T. Jolliffe and J. Cadima, ``Principal component analysis: a review and recent developments,'' \emph{Philosophical Transactions of the Royal Society A}, vol. 374, 2016.
+
+\end{thebibliography}
+\end{document}
