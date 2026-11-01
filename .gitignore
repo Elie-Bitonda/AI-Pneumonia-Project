@@ -25,3 +25,15 @@ __pycache__/
 .DS_Store
 Thumbs.db
 __MACOSX/
+
+# Keep later model binaries, caches, and local deployment checks out of Git.
+*.pt
+*.pth
+*.ckpt
+experiments/**/runs/
+experiments/**/*.npy
+kaggle_export/checkpoints/
+kaggle_export/canonical_images/
+deployment_checks/*.json
+deployment_checks/*.log
+phase2_implementation/Assignment3_Phase2.log
