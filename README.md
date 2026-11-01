@@ -1,134 +1,127 @@
 # Explainable Deep Learning for Multiclass Pediatric Pneumonia Classification
 
-Research pipeline for pediatric chest-radiograph classification into **Normal**, **Bacterial Pneumonia**, and **Viral Pneumonia**, with explicit leakage control, reproducible preprocessing, diagnostic feature analysis, model evaluation, and explainability.
+A reproducible research pipeline for pediatric chest X-rays, focused on **data integrity, leakage-safe preprocessing, diagnostic analysis, and reproducibility** before predictive modeling.
 
-> **Research use only.** Dataset labels are research annotations and the system is not a substitute for clinical diagnosis, microbiological confirmation, or treatment decisions.
+> **Research use only.** Dataset labels are research annotations and this repository does not provide clinical diagnosis or treatment recommendations.
 
-## Project at a glance
+## At a glance
 
-| Item | Current evidence |
+| Item | Verified evidence |
 |---|---:|
 | Canonical readable image contents | **5,824** |
-| Normal | **1,579 (27.11%)** |
-| Bacterial pneumonia | **2,760 (47.39%)** |
-| Viral pneumonia | **1,485 (25.50%)** |
-| Filename-derived relation groups | **3,117** |
-| Final leakage-control components | **2,926** |
-| Unresolved pHash edges retained as split constraints | **223** |
-| Outer evaluation design | **5 group-aware folds** |
-| Approximate role split | **72% train / 8% internal validation / 20% outer evaluation** |
+| Class distribution | **1,579 Normal · 2,760 Bacterial · 1,485 Viral** |
+| Leakage-control structure | **3,117 relation groups → 2,926 final components** |
+| Unresolved pHash constraints | **223 edges** |
+| Evaluation design | **5 group-aware outer folds** |
+| Fold-1 diagnostic matrix | **4,191 × 6 → 4,191 × 4** |
+| Reproducibility | **16/16 notebook cells · 30/30 Phase 2 tests** |
 
-The canonical cohort contains unique readable **SHA-256 byte contents**, not 5,824 verified independent patients.
+The canonical cohort represents unique readable **SHA-256 image contents**, not 5,824 independently verified patients.
 
-## Research pipeline
+## Research flow
 
 ```mermaid
 flowchart LR
     A[Raw chest X-rays] --> B[Integrity + SHA-256 audit]
-    B --> C[Canonical cohort<br/>N = 5,824]
-    C --> D[Relation grouping + pHash constraints]
-    D --> E[5 group-aware outer folds]
+    B --> C[Canonical cohort<br/>5,824 images]
+    C --> D[Relation groups + pHash constraints]
+    D --> E[5 group-aware folds]
     E --> F[Training-only preprocessing]
-    F --> G[Internal validation<br/>model/preprocessing selection]
-    G --> H[Locked outer evaluation]
-    H --> I[Explainability audit]
+    F --> G[Metadata diagnostics]
+    G --> H[Leakage + reproducibility verification]
 ```
 
-Two preprocessing branches are deliberately separated:
+The implementation deliberately separates two branches:
 
-- **Image branch:** deterministic grayscale handling, geometry control, optional CLAHE, ImageNet-compatible representation, and training-only augmentation.
-- **Metadata diagnostic branch:** a leakage-free Scikit-Learn `Pipeline`/`ColumnTransformer` fitted only on active training rows. Six numeric candidates are reduced to four retained diagnostics after rank-VIF control; metadata are **not CNN predictors**.
+- **Image pipeline:** validated grayscale handling, deterministic resize/padding, and training-only augmentation controls.
+- **Metadata diagnostic pipeline:** Scikit-Learn `Pipeline`/`ColumnTransformer` analysis fitted only on training rows. Metadata are used to investigate acquisition shortcuts and are **not CNN predictors**.
 
-## Phase 2 — preprocessing and diagnostic validation
+## Key Phase 2 findings
 
-Phase 2 operationalized the Phase 1 strategy before predictive modeling.
-
-| Diagnostic | Key result |
-|---|---|
-| Selected numeric candidates | 6 |
-| Retained metadata outputs | **4** |
-| Fold-1 rank-VIF maximum | **121.224 → 6.146** after reduction |
-| Fold-1 file-size skew | **2.634 → 0.470** after `log1p` diagnostic |
-| PCA retained-space variance | PC1 51.68%, PC2 24.39%, PC3 17.94%, PC4 5.98% |
+| Diagnostic | Result |
+|---|---:|
+| Retained metadata variables | **4 of 6** |
+| Fold-1 maximum rank-VIF | **121.224 → 6.146** |
+| Fold-1 file-size skewness | **2.634 → 0.470** with diagnostic `log1p` |
+| PCA variance | **51.68%, 24.39%, 17.94%, 5.98%** |
 | Components for ≥90% variance | **3** |
 | Components for ≥95% variance | **4** |
-| Phase 2 notebook execution | **16/16 cells** |
-| Phase 2 unit tests | **49 passed** |
 
-For Fold 1, the training diagnostic matrix has the explicit dimensional contract **4,191 × 6 → 4,191 × 4**. The transformation preserves row membership while removing two redundant metadata columns. The same fitted four-column schema is applied to the corresponding internal-validation and outer-evaluation roles without refitting.
+The Fold-1 pipeline preserves all 4,191 training rows while removing two redundant metadata columns (`height` and `aspect_ratio`). The fitted four-column schema is applied to validation and outer-evaluation roles **without refitting**.
 
-### Correlation / shortcut diagnostics
+## Visual diagnostics
 
-![Fold-1 metadata correlation matrix](figures/fig3_1_correlation_matrix.png)
+<p align="center">
+  <img src="figures/fig1_2_target_distribution.png" width="47%" alt="Canonical target distribution">
+  <img src="figures/fig3_1_correlation_matrix.png" width="47%" alt="Fold-1 metadata correlation matrix">
+</p>
 
-Strong geometry/storage associations are treated as potential acquisition shortcuts and redundancy signals, not disease mechanisms.
+<p align="center">
+  <img src="figures/fig4_1_transformation_grid.png" width="47%" alt="Transformation comparison">
+  <img src="figures/fig5_1_pca_scree_plot.png" width="47%" alt="PCA scree and cumulative variance plot">
+</p>
 
-## Current post-Phase-2 modeling progress
+The complete 300-DPI diagnostic set is available in [`figures/`](figures/):
 
-Modeling was performed **after** the Phase 2 preprocessing assignment. These results are therefore not retroactively claimed as Phase 2 evidence.
+**Missingness · Target distribution · Outliers · Correlation · Collinear scatterplots · Target association · Transformations · PCA**
 
-| Metric | Locked out-of-fold result |
-|---|---:|
-| Three-class accuracy | **81.89%** |
-| Macro precision | **81.35%** |
-| Macro recall / balanced accuracy | **81.25%** |
-| Macro F1 | **81.30%** |
-| Normal F1 | **94.97%** |
-| Bacterial F1 | **83.17%** |
-| Viral F1 | **65.75%** |
+## Leakage-control design
 
-The dominant residual error is **Bacterial ↔ Viral** confusion. A post-hoc hierarchical reading of the same locked predictions gives **97.34% accuracy** for Normal-vs-Pneumonia and **78.23%** for Bacterial-vs-Viral discrimination.
+Each canonical image is assigned to outer evaluation exactly once. Preprocessing statistics and diagnostic transformations are learned from the active training subset only.
 
-Architecture selection retained DenseNet-121 in four folds and ConvNeXt-Tiny in one fold. The reported **81.89%** is the locked five-fold out-of-fold evaluation result; it is **not** a claimed accuracy for the later five-model deployment ensemble.
+| Fold | Train | Validation | Outer evaluation |
+|---:|---:|---:|---:|
+| 1 | 4,191 | 468 | 1,165 |
+| 2 | 4,192 | 466 | 1,166 |
+| 3 | 4,195 | 466 | 1,163 |
+| 4 | 4,192 | 466 | 1,166 |
+| 5 | 4,194 | 466 | 1,164 |
 
-## Explainability
+Verified safeguards include SHA-256 isolation, relation-group isolation, final-component isolation, pHash-edge isolation, exactly-once outer-evaluation coverage, and exclusion of targets/identifiers from fitted metadata.
 
-A locked 25-case HiResCAM audit contains:
-
-- 5 correct Normal cases
-- 5 correct Bacterial cases
-- 5 correct Viral cases
-- 5 Bacterial → Viral errors
-- 5 Viral → Bacterial errors
-
-All **25/25** explanations reproduced the saved evaluation probabilities. In the 10 padded G1 cases, padding occupied **27.28%** of image area on average but received **19.73%** of positive HiResCAM attribution; **0/10** cases had padding attribution exceed padding area. This weakens, but does not eliminate, padding-shortcut concerns. HiResCAM regions are model attributions, not clinically verified lesions.
-
-## Repository map
+## Repository
 
 ```text
 AI-Pneumonia-Project/
-├── data/processed/          # audit, grouping, fold and diagnostic evidence
-├── figures/                 # publication-quality diagnostics
-├── phase1_strategy/         # Phase 1 strategy and audit evidence
-├── phase2_implementation/   # executed notebook and IEEE report
-├── src/                     # reusable pipeline / audit modules
-├── tests/                   # reproducibility and integrity tests
+├── data/processed/          # fold, grouping, audit and diagnostic evidence
+├── figures/                 # publication-quality Phase 2 diagnostics
+├── phase1_strategy/         # preserved Phase 1 strategy
+├── phase2_implementation/
+│   ├── notebooks/           # executed pipeline notebook
+│   ├── execute_notebook.py
+│   └── phase2_decision_log.md
+├── src/                     # reusable Phase 2 modules
+├── tests/                   # Phase 2 verification tests
 └── requirements.txt
 ```
 
-## Reproduction
-
-From the repository root on Windows PowerShell:
+### Reproduce the Phase 2 checks
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-$env:MPLCONFIGDIR = Join-Path (Get-Location) '.mplconfig'
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -p test_phase2_pipeline.py -v
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -p test_phase2_grouping.py -v
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -p test_phase2_diagnostics.py -v
 ```
 
-Raw X-rays, archives, virtual environments, model checkpoints, and caches are intentionally excluded from version control. The repository stores code, derived evidence, figures, and reports needed to audit the research process.
+Verified result: **30 tests passed, 0 failed**.
 
-## Reports
+Executed notebook: [`phase2_implementation/notebooks/pipeline_execution.ipynb`](phase2_implementation/notebooks/pipeline_execution.ipynb)
 
-- [Phase 1 strategy](phase1_strategy/)
-- [Phase 2 implementation](phase2_implementation/)
-- [Live repository](https://github.com/Elie-Bitonda/AI-Pneumonia-Project)
+## Current status
+
+**Phase 2 preprocessing and diagnostic validation is complete and reproducible.**  
+This repository currently exposes the verified preprocessing, leakage-control, diagnostic, and reproducibility evidence. Later model-training, explainability, and deployment artifacts are intentionally kept outside this Phase 2 repository scope until separately reviewed.
 
 ## Limitations
 
-Patient identity is not fully verified; filename relations and pHash edges are conservative leakage controls rather than confirmed patient identities. The source population may contain acquisition shortcuts. Viral pneumonia remains the most difficult class. External clinical validation has not been performed, and the deployment prototype is research software only.
+- Patient identities are not fully verified.
+- Filename relations and pHash edges are conservative leakage constraints, not confirmed patient relationships.
+- Metadata associations can reflect acquisition/storage processes rather than disease mechanisms.
+- Phase 2 validates preprocessing and leakage controls; it does **not** establish classifier performance or clinical validity.
 
 ## Reference
 
-Kermany, D. S. *et al.* “Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning.” *Cell*, 172(5), 1122–1131.e9, 2018. https://doi.org/10.1016/j.cell.2018.02.010
+D. S. Kermany *et al.*, “Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning,” *Cell*, vol. 172, no. 5, pp. 1122–1131.e9, 2018. https://doi.org/10.1016/j.cell.2018.02.010
