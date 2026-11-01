@@ -1,0 +1,349 @@
+{
+  "canonical_n": 5824,
+  "class_counts": {
+    "BACTERIAL_PNEUMONIA": 2760,
+    "NORMAL": 1579,
+    "VIRAL_PNEUMONIA": 1485
+  },
+  "base_relation_groups": 3117,
+  "constraint_graph_audit": {
+    "phash_edges": 223,
+    "base_groups": 3117,
+    "final_components": 2926,
+    "net_base_group_merges": 191,
+    "components_touched_by_edges": 66,
+    "unique_edge_endpoint_contents": 262,
+    "largest_component_images": 140,
+    "mixed_class_components": 966,
+    "independent_graph_partition_matches": true,
+    "interpretation": "Unresolved similarity edges constrain role allocation; mixed-class components are not verified patient identities."
+  },
+  "leakage_control_groups": 2926,
+  "largest_constraint_component_images": 140,
+  "unresolved_phash_edges": 223,
+  "phash_policy": "all unresolved edges are split-only constraints; no identity/duplicate adjudication",
+  "class_index": {
+    "NORMAL": 0,
+    "BACTERIAL_PNEUMONIA": 1,
+    "VIRAL_PNEUMONIA": 2
+  },
+  "outer_seed": 42,
+  "inner_seed": "42 + outer_fold; first of ten inner folds",
+  "predictors": [
+    "width",
+    "height",
+    "aspect_ratio",
+    "file_size_bytes",
+    "mean_intensity",
+    "std_intensity"
+  ],
+  "excluded_columns": {
+    "filepath": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "filename": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "original_split": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "original_folder": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "target_label": "I use this nominal label as Y only.",
+    "patient_id_if_parseable": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "patient_id_status": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "label_parse_status": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "label_parse_reason": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "image_mode": "I omit redundant storage/channel encodings after the equal-channel audit.",
+    "channel_count": "I omit redundant storage/channel encodings after the equal-channel audit.",
+    "min_intensity": "I retain the six Phase 1 diagnostic candidates rather than adding extrema.",
+    "max_intensity": "I retain the six Phase 1 diagnostic candidates rather than adding extrema.",
+    "readable": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "sha256_hash": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "intensity_basis": "I omit redundant storage/channel encodings after the equal-channel audit.",
+    "read_error": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "hash_error": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "is_macos_sidecar": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "all_filepaths": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "all_original_splits": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "all_target_labels": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "all_filenames": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "source_file_count": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "alternative_filepaths": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "manifest_status": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields.",
+    "patient_grouping_validated": "I exclude identifiers, provenance, parsing/quality status, alternative annotations, and structural error fields."
+  },
+  "missingness": {
+    "selected_predictor_missing_cells": 0,
+    "canonical_missing_cells": 13228,
+    "original_missing_cells": 96864,
+    "structural_error_blanks": 11648,
+    "unavailable_candidate_ids": 1580
+  },
+  "fold_diagnostics": [
+    {
+      "outer_fold": 1,
+      "fit_rows": 4191,
+      "training_hash_fingerprint": "4130fff4c57761064091d4cab1b80cb1c647904b0dfd55430d145d53ef6f33d1",
+      "input_features": 6,
+      "output_features": 4,
+      "retained_columns": [
+        "width",
+        "file_size_bytes",
+        "mean_intensity",
+        "std_intensity"
+      ],
+      "removed_columns": [
+        {
+          "column": "aspect_ratio",
+          "reason": "structurally derived redundancy first"
+        },
+        {
+          "column": "height",
+          "reason": "largest rank-VIF > threshold; MI then alphabetical ties"
+        }
+      ],
+      "scaler_mean": [
+        1330.6602242901456,
+        972.568599379623,
+        1.4431519227264795,
+        212671.96420901932,
+        122.67866128084425,
+        56.934044552277946
+      ],
+      "scaler_fit_count_verified": true,
+      "iqr_flagged_training_images": 729,
+      "raw_file_size_skew": 2.6337677433097193,
+      "log_file_size_skew": 0.4696777156757336,
+      "pca_90_components": 3,
+      "pca_95_components": 4,
+      "pca_candidate_90_components": 4,
+      "pca_candidate_95_components": 4
+    },
+    {
+      "outer_fold": 2,
+      "fit_rows": 4192,
+      "training_hash_fingerprint": "8a46aaac5d8b81606eba9b2aa32317e4a417ea30e7a3649810bebe0b329ac9d4",
+      "input_features": 6,
+      "output_features": 4,
+      "retained_columns": [
+        "width",
+        "file_size_bytes",
+        "mean_intensity",
+        "std_intensity"
+      ],
+      "removed_columns": [
+        {
+          "column": "aspect_ratio",
+          "reason": "structurally derived redundancy first"
+        },
+        {
+          "column": "height",
+          "reason": "largest rank-VIF > threshold; MI then alphabetical ties"
+        }
+      ],
+      "scaler_mean": [
+        1328.612356870229,
+        972.0665553435115,
+        1.4407920939136933,
+        210600.34804389314,
+        122.725712160903,
+        56.943599559450966
+      ],
+      "scaler_fit_count_verified": true,
+      "iqr_flagged_training_images": 742,
+      "raw_file_size_skew": 2.7998843616869546,
+      "log_file_size_skew": 0.47312070228105324,
+      "pca_90_components": 3,
+      "pca_95_components": 4,
+      "pca_candidate_90_components": 4,
+      "pca_candidate_95_components": 4
+    },
+    {
+      "outer_fold": 3,
+      "fit_rows": 4195,
+      "training_hash_fingerprint": "c2e23fb13039139c6735bbde47f800b121cb7784648314625ad3e5840d349a3a",
+      "input_features": 6,
+      "output_features": 4,
+      "retained_columns": [
+        "width",
+        "file_size_bytes",
+        "mean_intensity",
+        "std_intensity"
+      ],
+      "removed_columns": [
+        {
+          "column": "aspect_ratio",
+          "reason": "structurally derived redundancy first"
+        },
+        {
+          "column": "height",
+          "reason": "largest rank-VIF > threshold; MI then alphabetical ties"
+        }
+      ],
+      "scaler_mean": [
+        1330.3451728247915,
+        972.9482717520858,
+        1.4428361070690094,
+        212261.0917759237,
+        123.03818463659638,
+        56.988178036544866
+      ],
+      "scaler_fit_count_verified": true,
+      "iqr_flagged_training_images": 799,
+      "raw_file_size_skew": 2.7347176020661856,
+      "log_file_size_skew": 0.44429716082922566,
+      "pca_90_components": 3,
+      "pca_95_components": 4,
+      "pca_candidate_90_components": 4,
+      "pca_candidate_95_components": 4
+    },
+    {
+      "outer_fold": 4,
+      "fit_rows": 4192,
+      "training_hash_fingerprint": "c9e56ebacfe4077b688c5c4211b325ce9a7303e3eb894eb3f68d6d6444da9104",
+      "input_features": 6,
+      "output_features": 4,
+      "retained_columns": [
+        "width",
+        "file_size_bytes",
+        "mean_intensity",
+        "std_intensity"
+      ],
+      "removed_columns": [
+        {
+          "column": "aspect_ratio",
+          "reason": "structurally derived redundancy first"
+        },
+        {
+          "column": "height",
+          "reason": "largest rank-VIF > threshold; MI then alphabetical ties"
+        }
+      ],
+      "scaler_mean": [
+        1318.9002862595419,
+        962.7135019083969,
+        1.4464825439100644,
+        208986.82776717556,
+        122.54227090557364,
+        56.9628190277958
+      ],
+      "scaler_fit_count_verified": true,
+      "iqr_flagged_training_images": 818,
+      "raw_file_size_skew": 2.662733813529504,
+      "log_file_size_skew": 0.43973787348980625,
+      "pca_90_components": 3,
+      "pca_95_components": 4,
+      "pca_candidate_90_components": 4,
+      "pca_candidate_95_components": 4
+    },
+    {
+      "outer_fold": 5,
+      "fit_rows": 4194,
+      "training_hash_fingerprint": "d3a1e763122e4c00d646d4b1d34e32d27b31f06bef18d7a936451f1bb46bb77d",
+      "input_features": 6,
+      "output_features": 4,
+      "retained_columns": [
+        "width",
+        "file_size_bytes",
+        "mean_intensity",
+        "std_intensity"
+      ],
+      "removed_columns": [
+        {
+          "column": "aspect_ratio",
+          "reason": "structurally derived redundancy first"
+        },
+        {
+          "column": "height",
+          "reason": "largest rank-VIF > threshold; MI then alphabetical ties"
+        }
+      ],
+      "scaler_mean": [
+        1321.7420123986647,
+        964.245588936576,
+        1.4471734199376904,
+        208904.4411063424,
+        122.83131817691319,
+        56.914240498699286
+      ],
+      "scaler_fit_count_verified": true,
+      "iqr_flagged_training_images": 800,
+      "raw_file_size_skew": 2.7144984673900803,
+      "log_file_size_skew": 0.4451477618427032,
+      "pca_90_components": 3,
+      "pca_95_components": 4,
+      "pca_candidate_90_components": 4,
+      "pca_candidate_95_components": 4
+    }
+  ],
+  "leakage_assertions": {
+    "sha_role_isolation": true,
+    "group_role_isolation": true,
+    "base_relation_isolation": true,
+    "phash_edge_isolation": true,
+    "evaluation_coverage_exactly_once": true,
+    "source_split_not_used": true,
+    "target_not_a_predictor": true,
+    "train_only_scaler_fits": true,
+    "raw_dataset_unchanged": true,
+    "phase1_tables_unchanged": true
+  },
+  "image_checks": [
+    {
+      "mode": "L",
+      "shape": [
+        224,
+        224
+      ],
+      "dtype": "float32",
+      "minimum": 0.0,
+      "maximum": 0.843137264251709,
+      "deterministic": true,
+      "replicated_channels_equal": true
+    },
+    {
+      "mode": "RGB",
+      "shape": [
+        224,
+        224
+      ],
+      "dtype": "float32",
+      "minimum": 0.0,
+      "maximum": 0.7019608020782471,
+      "deterministic": true,
+      "replicated_channels_equal": true
+    }
+  ],
+  "raw_file_count": 17591,
+  "raw_fingerprint_before": "815cc7d45e0ecd455375d63d9fca0e4a267ee9e0bbcb15564b810bedd597c499",
+  "raw_fingerprint_after": "815cc7d45e0ecd455375d63d9fca0e4a267ee9e0bbcb15564b810bedd597c499",
+  "manifest_sha256": "d23f6446949866a314efcc85809750bf9ddfe8d8f8108c75159795a05d0b6bd3",
+  "phase1_figure_backup_sha256": "b9b68cf7ebc9aff6017f2dbed30ea221002866cc73c82cb65e5a554c8f80354a",
+  "figure_paths": [
+    "D:\\AI-Pneumonia-Project\\figures\\fig1_1_missingness_heatmap.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig1_2_target_distribution.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig2_1_outlier_boxplots.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig3_1_correlation_matrix.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig3_2_collinear_scatterplots.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig3_3_target_importance.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig4_1_transformation_grid.png",
+    "D:\\AI-Pneumonia-Project\\figures\\fig5_1_pca_scree_plot.png"
+  ],
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "Pillow": "12.3.0",
+    "matplotlib": "3.11.2",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "nbformat": "5.11.1",
+    "nbclient": "0.11.0",
+    "ipykernel": "7.4.0"
+  },
+  "limitations": "I retained uncertain relations as constraints; I do not claim verified patient independence, clinical causation, or model performance.",
+  "pca_scope": "post-collinearity retained pipeline output; fold-1 required figure; six-candidate comparison saved separately; exploratory only",
+  "mi_figure_scope": "mean and sample SD of independently recomputed MI in five overlapping actual training subsets; descriptive variability, not confidence intervals",
+  "metadata_pipeline": "explicit numeric ColumnTransformer/StandardScaler followed by training rank-VIF reduction; no imputation, capping, log transform, categorical predictors, or PCA retained",
+  "augmentation": {
+    "rotation_degrees": 5,
+    "translation_fraction": 0.02,
+    "role": "train only",
+    "seed_policy": "explicit sample/epoch seed",
+    "model_training_performed": false
+  }
+}
