@@ -195,6 +195,11 @@ AI-Pneumonia-Project/
 
 Executed notebook: [`phase2_implementation/notebooks/pipeline_execution.ipynb`](phase2_implementation/notebooks/pipeline_execution.ipynb)
 
+## Phase 2 report
+
+- [Final IEEE report (PDF)](phase2_implementation/Assignment3_Phase2.pdf)
+- [LaTeX source](phase2_implementation/Assignment3_Phase2.tex)
+
 ## Limitations
 
 - Patient identities are not fully verified.
