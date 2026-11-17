@@ -1,0 +1,24 @@
+{
+  "architecture": "DenseNet-121",
+  "fold": 4,
+  "best_epoch": 3,
+  "geometry": "G1",
+  "contrast": "C1",
+  "training_augmentation": "A1",
+  "image_size": [224, 224],
+  "channels": 3,
+  "input_representation": "grayscale replicated to RGB",
+  "normalization": {
+    "mean": [0.485, 0.456, 0.406],
+    "std": [0.229, 0.224, 0.225]
+  },
+  "class_order": [
+    "NORMAL",
+    "BACTERIAL_PNEUMONIA",
+    "VIRAL_PNEUMONIA"
+  ],
+  "checkpoint_filename": "fold4_best.pt",
+  "checkpoint_sha256": "404deb43f00463371c6898360e7b89231846c9c5684b4284891db2d87cb480e4",
+  "validation_macro_f1": 0.8691899982877866,
+  "research_use_only": true
+}
