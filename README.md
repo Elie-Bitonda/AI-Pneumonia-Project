@@ -210,3 +210,58 @@ Executed notebook: [`phase2_implementation/notebooks/pipeline_execution.ipynb`](
 ## Reference
 
 D. S. Kermany *et al.*, “Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning,” *Cell*, vol. 172, no. 5, pp. 1122–1131.e9, 2018. https://doi.org/10.1016/j.cell.2018.02.010
+
+
+## Deployment phase — November 17, 2026
+
+The project has now moved from model evaluation into deployment preparation.
+
+### Model direction
+
+The current deployment architecture is **DenseNet-121** because it was the most consistent architecture in the five-fold comparison, winning **4 of 5 folds**.
+
+Five-fold outer evaluation:
+
+- **Accuracy:** 81.89%
+- **Macro-F1:** 81.30%
+- **Normal F1:** 94.97%
+- **Bacterial pneumonia F1:** 83.17%
+- **Viral pneumonia F1:** 65.75%
+
+A detailed model-selection and robustness summary is available here:
+
+- [Model selection and robustness summary](results/model_selection_and_robustness.md)
+
+### Deployment starter
+
+A Dockerized FastAPI starter is now available in:
+
+- [deployment/](deployment/)
+
+Current routes:
+
+- `GET /` — project status
+- `GET /health` — service/model readiness
+- `POST /predict` — reserved for the frozen DenseNet-121 inference adapter
+
+The API deliberately does **not** return mock medical predictions. Real inference will be connected after the exact deployment checkpoint and preprocessing contract are frozen.
+
+Planned deployment path:
+
+```text
+Chest X-ray
+    ↓
+FastAPI /predict
+    ↓
+Preprocessing
+    ↓
+Frozen DenseNet-121
+    ↓
+Class probabilities
+    ↓
+Azure Container Apps HTTPS endpoint
+```
+
+The current cloud target is **Azure Container Apps** using the activated Azure for Students subscription.
+
+> Research use only. This system is not clinically validated.
